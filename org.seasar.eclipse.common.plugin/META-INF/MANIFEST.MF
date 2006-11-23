@@ -108,5 +108,5 @@ Bundle-ClassPath: common.jar,
  lib/javassist-3.3.ga.jar,
  lib/log4j-1.2.13.jar,
  lib/ognl-2.6.7.jar,
- lib/s2-extension-2.4.0-rc-3-SNAPSHOT.jar,
- lib/s2-framework-2.4.0-rc-3-SNAPSHOT.jar
+ lib/s2-extension-2.4.4.jar,
+ lib/s2-framework-2.4.4.jar
