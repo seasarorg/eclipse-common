@@ -254,10 +254,10 @@ public class ImageManager {
      * という名前のキーで登録されたオブジェクトをインジェクションします。
      * 
      * <pre>
-     *                         public class ImageHolder() {
-     *                             public static Image IMAGE_A;
-     *                             public static ImageDescriptor IMAGE_B;
-     *                         }
+     *                           public class ImageHolder() {
+     *                               public static Image IMAGE_A;
+     *                               public static ImageDescriptor IMAGE_B;
+     *                           }
      * </pre>
      * <pre>
      * ImageManager.injectImages(ImageHolder.class);
@@ -297,8 +297,6 @@ public class ImageManager {
             final Object o) {
         if (o != null) {
             FieldUtil.set(field, null, o);
-        } else {
-            logBindingFailed(clazz, field);
         }
     }
 
@@ -308,14 +306,9 @@ public class ImageManager {
         return (field.getModifiers() & MOD_MASK) == MOD_EXPECTED;
     }
 
-    protected static boolean isAssignableFrom(final Class<?> clazz,
+    protected static boolean isAssignableFrom(final Class clazz,
             final Field target) {
         return clazz.isAssignableFrom(target.getType());
-    }
-
-    protected static void logBindingFailed(final Class clazz, final Field field) {
-        logger.log("WJFC0200",
-                new Object[] { clazz.getName(), field.getName() });
     }
 
     protected static void checkKey(String key) {

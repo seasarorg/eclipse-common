@@ -29,7 +29,6 @@ import org.seasar.framework.exception.ResourceNotFoundRuntimeException;
 public class ImageManagerTest extends TestCase {
     private Display display;
 
-    @Override
     protected void setUp() throws Exception {
         display = Display.getCurrent();
         if (display == null) {
@@ -37,7 +36,6 @@ public class ImageManagerTest extends TestCase {
         }
     }
 
-    @Override
     protected void tearDown() throws Exception {
         ImageManager.dispose();
         if (display != null) {

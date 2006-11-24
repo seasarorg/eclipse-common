@@ -26,22 +26,23 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * @author y-komori
+ * {@link SWT} クラスの定数を扱うためのユーティリティクラスです。<br />
  * 
+ * @author y-komori
  */
 public class SWTUtil {
-    protected static Map<String, Integer> constants = new HashMap<String, Integer>();
+    protected static Map constants = new HashMap();
 
-    protected static Map<String, Color> colors = new HashMap<String, Color>();
+    protected static Map colors = new HashMap();
 
     static {
         Field[] fields = SWT.class.getFields();
-        for (Field field : fields) {
-            if (Modifier.isStatic(field.getModifiers())
-                    && (field.getType() == Integer.TYPE)) {
+        for (int i = 0; i < fields.length; i++) {
+            if (Modifier.isStatic(fields[i].getModifiers())
+                    && (fields[i].getType() == Integer.TYPE)) {
                 try {
-                    String name = field.getName();
-                    constants.put(name, field.getInt(null));
+                    String name = fields[i].getName();
+                    constants.put(name, new Integer(fields[i].getInt(null)));
 
                     if (name.startsWith("COLOR_")) {
                         String colorName = name.substring(6);
@@ -65,7 +66,7 @@ public class SWTUtil {
      */
     public static int getSWTConstant(String name) {
         int constant = SWT.NONE;
-        Integer constantObj = constants.get(name);
+        Integer constantObj = (Integer) constants.get(name);
         if (constantObj != null) {
             constant = constantObj.intValue();
         }
@@ -94,14 +95,12 @@ public class SWTUtil {
             StringTokenizer st = new StringTokenizer(styles, ",");
             while (st.hasMoreTokens()) {
                 String style = st.nextToken().trim();
-                Integer constant = getSWTConstant(style);
-                if (constant != null) {
-                    result |= constant.intValue();
+                int constant = getSWTConstant(style);
+                if (constant != SWT.NULL) {
+                    result |= constant;
                 }
             }
-        }
-        else
-        {
+        } else {
             result = defaultStyle;
         }
         return result;
@@ -145,7 +144,7 @@ public class SWTUtil {
             int blue = Integer.parseInt(colorString.substring(5, 7), 16);
             color = new Color(Display.getCurrent(), red, green, blue);
         } else {
-            color = colors.get(colorString.toUpperCase());
+            color = (Color) colors.get(colorString.toUpperCase());
         }
         return color;
     }
