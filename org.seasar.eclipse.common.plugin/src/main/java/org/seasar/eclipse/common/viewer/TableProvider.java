@@ -32,100 +32,100 @@ import org.seasar.framework.util.ArrayMap;
  * @see org.seasar.eclipse.common.viewer.ColumnDescriptor
  */
 public class TableProvider extends LabelProvider implements
-		ITableLabelProvider, ICellModifier {
+        ITableLabelProvider, ICellModifier {
 
-	private ArrayMap columnDescs;
+    private ArrayMap columnDescs;
 
-	private TableViewer viewer;
+    private TableViewer viewer;
 
-	public TableProvider(TableViewer viewer, ColumnDescriptor[] cds) {
-		this.viewer = viewer;
-		this.columnDescs = new ArrayMap(cds.length);
-		List<String> keys = new ArrayList<String>(cds.length);
-		List<CellEditor> editors = new ArrayList<CellEditor>(cds.length);
-		for (int i = 0; i < cds.length; i++) {
-			ColumnDescriptor cd = cds[i];
-			String name = cd.getName();
-			if (columnDescs.containsKey(name)) {
-				name = name + "@" + System.identityHashCode(cd);
-			}
-			this.columnDescs.put(name, cd);
-			keys.add(name);
-			editors.add(cd.getCellEditor());
-		}
-		this.viewer.setColumnProperties((String[]) keys.toArray(new String[keys
-				.size()]));
-		this.viewer.setCellEditors((CellEditor[]) editors
-				.toArray(new CellEditor[editors.size()]));
-		this.viewer.setCellModifier(this);
-	}
+    public TableProvider(TableViewer viewer, ColumnDescriptor[] cds) {
+        this.viewer = viewer;
+        this.columnDescs = new ArrayMap(cds.length);
+        List keys = new ArrayList(cds.length);
+        List editors = new ArrayList(cds.length);
+        for (int i = 0; i < cds.length; i++) {
+            ColumnDescriptor cd = cds[i];
+            String name = cd.getName();
+            if (columnDescs.containsKey(name)) {
+                name = name + "@" + System.identityHashCode(cd);
+            }
+            this.columnDescs.put(name, cd);
+            keys.add(name);
+            editors.add(cd.getCellEditor());
+        }
+        this.viewer.setColumnProperties((String[]) keys.toArray(new String[keys
+                .size()]));
+        this.viewer.setCellEditors((CellEditor[]) editors
+                .toArray(new CellEditor[editors.size()]));
+        this.viewer.setCellModifier(this);
+    }
 
-	protected ColumnDescriptor getDescriptor(String name) {
-		return (ColumnDescriptor) this.columnDescs.get(name);
-	}
+    protected ColumnDescriptor getDescriptor(String name) {
+        return (ColumnDescriptor) this.columnDescs.get(name);
+    }
 
-	protected ColumnDescriptor getDescriptor(int index) {
-		return (ColumnDescriptor) this.columnDescs.get(index);
-	}
+    protected ColumnDescriptor getDescriptor(int index) {
+        return (ColumnDescriptor) this.columnDescs.get(index);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object,
-	 *      int)
-	 */
-	public Image getColumnImage(Object element, int columnIndex) {
-		ColumnDescriptor cd = getDescriptor(columnIndex);
-		return cd != null ? cd.getImage(element) : null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object,
+     *      int)
+     */
+    public Image getColumnImage(Object element, int columnIndex) {
+        ColumnDescriptor cd = getDescriptor(columnIndex);
+        return cd != null ? cd.getImage(element) : null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object,
-	 *      int)
-	 */
-	public String getColumnText(Object element, int columnIndex) {
-		ColumnDescriptor cd = getDescriptor(columnIndex);
-		return cd != null ? cd.getText(element) : "";
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object,
+     *      int)
+     */
+    public String getColumnText(Object element, int columnIndex) {
+        ColumnDescriptor cd = getDescriptor(columnIndex);
+        return cd != null ? cd.getText(element) : "";
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object,
-	 *      java.lang.String)
-	 */
-	public boolean canModify(Object element, String property) {
-		ColumnDescriptor cd = getDescriptor(property);
-		return cd != null ? cd.canModify() : false;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object,
+     *      java.lang.String)
+     */
+    public boolean canModify(Object element, String property) {
+        ColumnDescriptor cd = getDescriptor(property);
+        return cd != null ? cd.canModify() : false;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.viewers.ICellModifier#getValue(java.lang.Object,
-	 *      java.lang.String)
-	 */
-	public Object getValue(Object element, String property) {
-		ColumnDescriptor cd = getDescriptor(property);
-		return cd != null ? cd.getValue(element) : null;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.viewers.ICellModifier#getValue(java.lang.Object,
+     *      java.lang.String)
+     */
+    public Object getValue(Object element, String property) {
+        ColumnDescriptor cd = getDescriptor(property);
+        return cd != null ? cd.getValue(element) : null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.viewers.ICellModifier#modify(java.lang.Object,
-	 *      java.lang.String, java.lang.Object)
-	 */
-	public void modify(Object element, String property, Object value) {
-		if (element instanceof Item) {
-			element = ((Item) element).getData();
-		}
-		ColumnDescriptor cd = getDescriptor(property);
-		if (cd != null) {
-			cd.setValue(element, value);
-			this.viewer.update(element, new String[] { property });
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.viewers.ICellModifier#modify(java.lang.Object,
+     *      java.lang.String, java.lang.Object)
+     */
+    public void modify(Object element, String property, Object value) {
+        if (element instanceof Item) {
+            element = ((Item) element).getData();
+        }
+        ColumnDescriptor cd = getDescriptor(property);
+        if (cd != null) {
+            cd.setValue(element, value);
+            this.viewer.update(element, new String[] { property });
+        }
+    }
 }
