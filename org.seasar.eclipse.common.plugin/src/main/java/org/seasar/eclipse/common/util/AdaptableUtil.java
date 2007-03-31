@@ -15,6 +15,7 @@
  */
 package org.seasar.eclipse.common.util;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -41,6 +42,16 @@ public class AdaptableUtil {
             result = (IResource) adaptable;
         } else if (adaptable != null) {
             result = (IResource) adaptable.getAdapter(IResource.class);
+        }
+        return result;
+    }
+
+    public static IProject toProject(IAdaptable adaptable) {
+        IProject result = null;
+        if (adaptable instanceof IProject) {
+            result = (IProject) adaptable;
+        } else if (adaptable != null) {
+            result = (IProject) adaptable.getAdapter(IProject.class);
         }
         return result;
     }
