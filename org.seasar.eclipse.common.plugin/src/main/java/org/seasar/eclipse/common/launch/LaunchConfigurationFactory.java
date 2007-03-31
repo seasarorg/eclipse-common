@@ -51,6 +51,7 @@ public class LaunchConfigurationFactory {
             if (config == null) {
                 ILaunchConfigurationWorkingCopy copy = type.newInstance(null,
                         handler.getTypeName());
+                handler.setUp(copy);
                 copy.doSave();
                 config = copy;
             }
@@ -67,5 +68,7 @@ public class LaunchConfigurationFactory {
         String getConfigName();
 
         boolean equals(ILaunchConfiguration config);
+
+        void setUp(ILaunchConfigurationWorkingCopy config);
     }
 }
