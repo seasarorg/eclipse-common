@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Seasar Common Plug-in
 Bundle-SymbolicName: org.seasar.eclipse.common
-Bundle-Version: 0.0.2
+Bundle-Version: 0.0.3
 Bundle-Activator: org.seasar.eclipse.common.CommonPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
@@ -14,6 +14,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui
 Eclipse-AutoStart: true
 Export-Package: org.seasar.eclipse.common,
+ org.seasar.eclipse.common.action,
  org.seasar.eclipse.common.preference,
  org.seasar.eclipse.common.util,
  org.seasar.eclipse.common.variable,
