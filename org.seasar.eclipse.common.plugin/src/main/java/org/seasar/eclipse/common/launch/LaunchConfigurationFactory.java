@@ -50,7 +50,7 @@ public class LaunchConfigurationFactory {
             }
             if (config == null) {
                 ILaunchConfigurationWorkingCopy copy = type.newInstance(null,
-                        handler.getTypeName());
+                        handler.getConfigName());
                 handler.setUp(copy);
                 config = copy.doSave();
             }
