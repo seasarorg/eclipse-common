@@ -52,8 +52,7 @@ public class LaunchConfigurationFactory {
                 ILaunchConfigurationWorkingCopy copy = type.newInstance(null,
                         handler.getTypeName());
                 handler.setUp(copy);
-                copy.doSave();
-                config = copy;
+                config = copy.doSave();
             }
         } catch (CoreException e) {
             CommonPlugin.log(e);

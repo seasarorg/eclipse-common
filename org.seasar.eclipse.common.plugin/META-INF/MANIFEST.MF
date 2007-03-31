@@ -11,10 +11,12 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.debug.core,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,
- org.eclipse.ui
+ org.eclipse.ui,
+ org.eclipse.ui.workbench.texteditor
 Eclipse-AutoStart: true
 Export-Package: org.seasar.eclipse.common,
  org.seasar.eclipse.common.action,
+ org.seasar.eclipse.common.launch,
  org.seasar.eclipse.common.preference,
  org.seasar.eclipse.common.util,
  org.seasar.eclipse.common.variable,
