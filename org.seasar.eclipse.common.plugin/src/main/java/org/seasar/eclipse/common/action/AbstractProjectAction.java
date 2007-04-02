@@ -16,13 +16,14 @@
 package org.seasar.eclipse.common.action;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IActionDelegate;
 import org.seasar.eclipse.common.CommonPlugin;
+import org.seasar.eclipse.common.util.AdaptableUtil;
 
 /**
  * @author taichi
@@ -49,9 +50,12 @@ public abstract class AbstractProjectAction implements IActionDelegate {
         if (selection instanceof IStructuredSelection) {
             IStructuredSelection ss = (IStructuredSelection) selection;
             Object o = ss.getFirstElement();
-            if (o instanceof IAdaptable) {
-                IAdaptable a = (IAdaptable) o;
-                this.project = (IProject) a.getAdapter(IProject.class);
+            this.project = AdaptableUtil.toProject(o);
+            if (this.project == null) {
+                IResource r = AdaptableUtil.toResource(o);
+                if (r != null) {
+                    this.project = r.getProject();
+                }
             }
         }
     }
@@ -64,12 +68,13 @@ public abstract class AbstractProjectAction implements IActionDelegate {
     public void run(IAction action) {
         try {
             if (this.project != null) {
-                run(this.project);
+                run(action, this.project);
             }
         } catch (CoreException e) {
             CommonPlugin.log(e);
         }
     }
 
-    public abstract void run(IProject project) throws CoreException;
+    public abstract void run(IAction action, IProject project)
+            throws CoreException;
 }
