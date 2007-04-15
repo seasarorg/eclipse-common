@@ -38,6 +38,11 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 
 /**
  * @author Masataka Kurihara (Gluegent, Inc.)
@@ -347,5 +352,28 @@ public class ProjectUtil {
         }
 
         return (IPath[]) result.toArray(new IPath[result.size()]);
+    }
+
+    public static IProject getCurrentSelectedProject() {
+        IProject result = null;
+        IWorkbenchWindow window = WorkbenchUtil.getWorkbenchWindow();
+        if (window != null) {
+            ISelection selection = window.getSelectionService().getSelection();
+            if (selection instanceof IStructuredSelection) {
+                IStructuredSelection ss = (IStructuredSelection) selection;
+                Object o = ss.getFirstElement();
+                result = AdaptableUtil.toProject(o);
+            } else {
+                IWorkbenchPage page = window.getActivePage();
+                if (page != null) {
+                    IEditorPart editor = page.getActiveEditor();
+                    if (editor != null) {
+                        result = AdaptableUtil.toProject(editor
+                                .getEditorInput());
+                    }
+                }
+            }
+        }
+        return result;
     }
 }

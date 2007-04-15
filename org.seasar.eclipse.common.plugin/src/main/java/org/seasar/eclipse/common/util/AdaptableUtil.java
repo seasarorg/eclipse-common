@@ -56,6 +56,12 @@ public class AdaptableUtil {
             IAdaptable a = (IAdaptable) adaptable;
             result = (IProject) a.getAdapter(IProject.class);
         }
+        if (result == null) {
+            IResource r = toResource(adaptable);
+            if (r != null) {
+                result = r.getProject();
+            }
+        }
         return result;
     }
 }

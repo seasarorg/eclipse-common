@@ -17,6 +17,8 @@ package org.seasar.eclipse.common.util;
 
 import java.net.URL;
 
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
@@ -37,6 +39,16 @@ public class WorkbenchUtil {
         } catch (Exception e) {
             CommonPlugin.log(e);
         }
+    }
+
+    public static IWorkbenchWindow getWorkbenchWindow() {
+        IWorkbench workbench = PlatformUI.getWorkbench();
+        IWorkbenchWindow result = workbench.getActiveWorkbenchWindow();
+        if (result == null && 0 < workbench.getWorkbenchWindowCount()) {
+            IWorkbenchWindow[] ws = workbench.getWorkbenchWindows();
+            result = ws[0];
+        }
+        return result;
     }
 
 }

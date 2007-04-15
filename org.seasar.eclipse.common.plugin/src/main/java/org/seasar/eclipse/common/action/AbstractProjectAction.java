@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IActionDelegate;
 import org.seasar.eclipse.common.CommonPlugin;
 import org.seasar.eclipse.common.util.AdaptableUtil;
+import org.seasar.eclipse.common.util.ProjectUtil;
 
 /**
  * @author taichi
@@ -67,6 +68,9 @@ public abstract class AbstractProjectAction implements IActionDelegate {
      */
     public void run(IAction action) {
         try {
+            if (this.project == null) {
+                this.project = ProjectUtil.getCurrentSelectedProject();
+            }
             if (this.project != null) {
                 run(action, this.project);
             }
