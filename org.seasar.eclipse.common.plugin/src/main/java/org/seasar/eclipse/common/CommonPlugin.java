@@ -23,7 +23,7 @@ public class CommonPlugin extends Plugin {
      * This method is called upon plug-in activation
      */
     public void start(BundleContext context) throws Exception {
-        super.start(context);
+        throw new UnsupportedOperationException("This plugin cannot started.");
     }
 
     /**
