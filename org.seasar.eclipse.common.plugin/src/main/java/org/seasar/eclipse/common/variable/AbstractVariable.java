@@ -19,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.ClasspathVariableInitializer;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
@@ -31,36 +31,36 @@ import org.eclipse.jdt.core.JavaModelException;
  */
 public abstract class AbstractVariable extends ClasspathVariableInitializer {
 
-    /**
-     * 
-     */
-    public AbstractVariable() {
-        super();
-    }
+	/**
+	 * 
+	 */
+	public AbstractVariable() {
+		super();
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jdt.core.ClasspathVariableInitializer#initialize(java.lang.String)
-     */
-    public void initialize(String variable) {
-        URL installLocation = getInstallLocation();
-        URL local = null;
-        try {
-            local = Platform.asLocalURL(installLocation);
-        } catch (IOException e) {
-            JavaCore.removeClasspathVariable(variable, null);
-            return;
-        }
-        try {
-            String fullPath = new File(local.getPath()).getAbsolutePath();
-            JavaCore.setClasspathVariable(variable,
-                    Path.fromOSString(fullPath), null);
-        } catch (JavaModelException e1) {
-            JavaCore.removeClasspathVariable(variable, null);
-        }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jdt.core.ClasspathVariableInitializer#initialize(java.lang.String)
+	 */
+	public void initialize(String variable) {
+		URL installLocation = getInstallLocation();
+		URL local = null;
+		try {
+			local = FileLocator.toFileURL(installLocation);
+		} catch (IOException e) {
+			JavaCore.removeClasspathVariable(variable, null);
+			return;
+		}
+		try {
+			String fullPath = new File(local.getPath()).getAbsolutePath();
+			JavaCore.setClasspathVariable(variable,
+					Path.fromOSString(fullPath), null);
+		} catch (JavaModelException e1) {
+			JavaCore.removeClasspathVariable(variable, null);
+		}
 
-    }
+	}
 
-    protected abstract URL getInstallLocation();
+	protected abstract URL getInstallLocation();
 }
