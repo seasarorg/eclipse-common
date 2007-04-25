@@ -38,12 +38,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
 
 /**
  * @author Masataka Kurihara (Gluegent, Inc.)
@@ -356,31 +350,6 @@ public class ProjectUtil {
     }
 
     public static IProject getCurrentSelectedProject() {
-        IProject result = null;
-        IWorkbenchWindow window = WorkbenchUtil.getWorkbenchWindow();
-        if (window != null) {
-            IWorkbenchPage page = window.getActivePage();
-            if (page != null) {
-                // getActiveEditorで取れる参照は、フォーカスがどこにあってもアクティブなエディタの参照が取れてしまう為。
-                IWorkbenchPart part = page.getActivePart();
-                if (part instanceof IEditorPart) {
-                    IEditorPart editor = (IEditorPart) part;
-                    if (editor != null) {
-                        result = AdaptableUtil.toProject(editor
-                                .getEditorInput());
-                    }
-                }
-            }
-            if (result == null) {
-                ISelection selection = window.getSelectionService()
-                        .getSelection();
-                if (selection instanceof IStructuredSelection) {
-                    IStructuredSelection ss = (IStructuredSelection) selection;
-                    Object o = ss.getFirstElement();
-                    result = AdaptableUtil.toProject(o);
-                }
-            }
-        }
-        return result;
+        return AdaptableUtil.toProject(ResouceUtil.getCurrentSelectedResouce());
     }
 }

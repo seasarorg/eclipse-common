@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 
 /**
@@ -32,19 +33,25 @@ public class ResouceUtil {
         IResource result = null;
         IWorkbenchWindow window = WorkbenchUtil.getWorkbenchWindow();
         if (window != null) {
-            ISelection selection = window.getSelectionService().getSelection();
-            if (selection instanceof IStructuredSelection) {
-                IStructuredSelection ss = (IStructuredSelection) selection;
-                Object o = ss.getFirstElement();
-                result = AdaptableUtil.toResource(o);
-            } else {
-                IWorkbenchPage page = window.getActivePage();
-                if (page != null) {
-                    IEditorPart editor = page.getActiveEditor();
+            IWorkbenchPage page = window.getActivePage();
+            if (page != null) {
+                // getActiveEditorで取れる参照は、フォーカスがどこにあってもアクティブなエディタの参照が取れてしまう為。
+                IWorkbenchPart part = page.getActivePart();
+                if (part instanceof IEditorPart) {
+                    IEditorPart editor = (IEditorPart) part;
                     if (editor != null) {
                         result = AdaptableUtil.toResource(editor
                                 .getEditorInput());
                     }
+                }
+            }
+            if (result == null) {
+                ISelection selection = window.getSelectionService()
+                        .getSelection();
+                if (selection instanceof IStructuredSelection) {
+                    IStructuredSelection ss = (IStructuredSelection) selection;
+                    Object o = ss.getFirstElement();
+                    result = AdaptableUtil.toResource(o);
                 }
             }
         }
