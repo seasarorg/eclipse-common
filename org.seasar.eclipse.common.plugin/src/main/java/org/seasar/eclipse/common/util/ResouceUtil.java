@@ -39,10 +39,7 @@ public class ResouceUtil {
                 IWorkbenchPart part = page.getActivePart();
                 if (part instanceof IEditorPart) {
                     IEditorPart editor = (IEditorPart) part;
-                    if (editor != null) {
-                        result = AdaptableUtil.toResource(editor
-                                .getEditorInput());
-                    }
+                    result = AdaptableUtil.toResource(editor.getEditorInput());
                 }
             }
             if (result == null) {
