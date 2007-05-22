@@ -62,9 +62,12 @@ public class StaticImageLoader {
                 continue;
             }
 
-            ImageDescriptor id = ImageDescriptor.createFromFile(holder, pathMap
-                    .get(key).toString());
-            registry.put(key, id);
+            ImageDescriptor id = registry.getDescriptor(key);
+            if (id == null) {
+                id = ImageDescriptor.createFromFile(holder, pathMap.get(key)
+                        .toString());
+                registry.put(key, id);
+            }
 
             if (isAssignableFrom(ImageDescriptor.class, field)) {
                 FieldUtil.set(field, null, id);
