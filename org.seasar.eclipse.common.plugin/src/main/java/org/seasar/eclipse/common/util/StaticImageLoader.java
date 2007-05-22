@@ -68,7 +68,7 @@ public class StaticImageLoader {
                         .toString());
                 registry.put(key, id);
             } else {
-                log(key + " is already registered");
+                log(key + " is already registered [" + holder + "]");
             }
 
             if (isAssignableFrom(ImageDescriptor.class, field)) {
