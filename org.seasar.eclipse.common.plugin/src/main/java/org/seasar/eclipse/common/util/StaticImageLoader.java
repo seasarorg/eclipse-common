@@ -67,6 +67,8 @@ public class StaticImageLoader {
                 id = ImageDescriptor.createFromFile(holder, pathMap.get(key)
                         .toString());
                 registry.put(key, id);
+            } else {
+                log(key + " is already registered");
             }
 
             if (isAssignableFrom(ImageDescriptor.class, field)) {
