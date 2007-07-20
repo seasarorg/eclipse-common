@@ -23,6 +23,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.seasar.eclipse.common.CommonPlugin;
+import org.seasar.framework.util.StringUtil;
 
 /**
  * @author taichi
@@ -32,10 +33,35 @@ public class WorkbenchUtil {
 
     public static void openUrl(String url) {
         try {
+            openUrl(new URL(url), false);
+        } catch (Exception e) {
+            CommonPlugin.log(e);
+        }
+    }
+
+    public static void openUrl(URL url, boolean maybeInternal) {
+        openUrl(url, maybeInternal, "");
+    }
+
+    public static void openUrl(URL url, boolean maybeInternal, String browserId) {
+        try {
             IWorkbenchBrowserSupport support = PlatformUI.getWorkbench()
                     .getBrowserSupport();
-            IWebBrowser browser = support.getExternalBrowser();
-            browser.openURL(new URL(url));
+            IWebBrowser browser = null;
+            if (maybeInternal && support.isInternalWebBrowserAvailable()) {
+                int flag = IWorkbenchBrowserSupport.AS_EDITOR
+                        | IWorkbenchBrowserSupport.LOCATION_BAR
+                        | IWorkbenchBrowserSupport.NAVIGATION_BAR
+                        | IWorkbenchBrowserSupport.STATUS
+                        | IWorkbenchBrowserSupport.PERSISTENT;
+                browser = support.createBrowser(flag, StringUtil
+                        .isEmpty(browserId) ? "" : browserId, null, null);
+            } else {
+                browser = support.getExternalBrowser();
+            }
+            if (browser != null) {
+                browser.openURL(url);
+            }
         } catch (Exception e) {
             CommonPlugin.log(e);
         }
