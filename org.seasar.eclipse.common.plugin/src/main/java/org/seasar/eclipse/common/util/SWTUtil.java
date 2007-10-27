@@ -78,7 +78,7 @@ public class SWTUtil {
     }
 
     /**
-     * <code>SWT</code>クラスの持つ定数を返します。<br>
+     * {@link SWT} クラスの持つ定数を返します。<br>
      * 
      * @param name
      *            定数名
@@ -98,7 +98,7 @@ public class SWTUtil {
      * 例えば以下のような入力に対して、本メソッドは
      * <code>SWT.HORIZONTAL | SWT.SHADOW_IN | SWT.CENTER</code>の計算結果を
      * 戻り値として返します。<br>
-     * <code>SWT</code>クラスに定義されていない定数が指定された場合、無視されます。
+     * {@link SWT} クラスに定義されていない定数が指定された場合、無視されます。
      * 
      * 入力例:<code>"HORIZONTAL, SHADOW_IN, CENTER"</code><br>
      * 
@@ -131,7 +131,7 @@ public class SWTUtil {
      * 例えば以下のような入力に対して、本メソッドは
      * <code>SWT.HORIZONTAL | SWT.SHADOW_IN | SWT.CENTER</code>の計算結果を
      * 戻り値として返します。<br>
-     * <code>SWT</code>クラスに定義されていない定数が指定された場合、無視されます。
+     * {@link SWT} クラスに定義されていない定数が指定された場合、無視されます。
      * 
      * 入力例:<code>"HORIZONTAL, SHADOW_IN, CENTER"</code><br>
      * 
@@ -145,10 +145,10 @@ public class SWTUtil {
     }
 
     /**
-     * <code>Color</code>オブジェクトを生成します。<br>
-     * <code>colorString</code> で指定された文字列から <code>Color</code> オブジェクトを生成します。<br>
+     * {@link Color} オブジェクトを生成します。<br>
+     * <code>colorString</code> で指定された文字列から {@link Color} オブジェクトを生成します。<br>
      * <code>colorString</code> は #RGB 形式または <code>red</code>、<code>blue</code>
-     * 等 <code>SWT</code>クラスの <code>COLOR_*</code>
+     * 等 {@link SWT} クラスの <code>COLOR_*</code>
      * 定数で用意された文字列が指定できます(いずれも、大文字・小文字どちらも使用可能)。<br>
      * 例: <code>#FF0000</code> を指定した場合、赤を表します。
      * 
