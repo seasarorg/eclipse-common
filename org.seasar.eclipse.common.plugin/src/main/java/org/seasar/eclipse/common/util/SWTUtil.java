@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+import org.seasar.framework.util.StringUtil;
 
 /**
  * {@link SWT} クラスの定数を扱うためのユーティリティクラスです。<br />
@@ -58,13 +59,32 @@ public class SWTUtil {
     }
 
     /**
+     * アンダースコアで区切られた文字列を、単語境界を大文字にした文字列に変換します。<br />
+     * <p>
+     * 【例】MOUSE_DOUBLE_CLICK -> mouseDoubleClick
+     * </p>
+     * 
+     * @param name
+     *            変換対象
+     * @return 変換結果
+     */
+    public static String convertConstantName(final String name) {
+        StringTokenizer st = new StringTokenizer(name, "_");
+        StringBuilder builder = new StringBuilder("");
+        while (st.hasMoreTokens()) {
+            builder.append(StringUtil.capitalize(st.nextToken().toLowerCase()));
+        }
+        return builder.toString();
+    }
+
+    /**
      * <code>SWT</code>クラスの持つ定数を返します。<br>
      * 
      * @param name
      *            定数名
      * @return 値。存在しない定数名が指定された場合、<code>SWT.NONE</code>を返します。
      */
-    public static int getSWTConstant(String name) {
+    public static int getSWTConstant(final String name) {
         int constant = SWT.NONE;
         Integer constantObj = (Integer) constants.get(name);
         if (constantObj != null) {
@@ -89,7 +109,7 @@ public class SWTUtil {
      * @return スタイル値。 引数が <code>null</code> の場合は <code>defalutStyle</code>
      *         を返します。
      */
-    public static int getStyle(String styles, int defaultStyle) {
+    public static int getStyle(final String styles, final int defaultStyle) {
         int result = 0;
         if (styles != null) {
             StringTokenizer st = new StringTokenizer(styles, ",");
@@ -120,7 +140,7 @@ public class SWTUtil {
      * @return スタイル値。 引数が <code>null</code> の場合は <code>SWT.NONE</code>
      *         を返します。
      */
-    public static int getStyle(String styles) {
+    public static int getStyle(final String styles) {
         return getStyle(styles, SWT.NONE);
     }
 
@@ -136,7 +156,7 @@ public class SWTUtil {
      *            色を表す文字列。
      * @return <code>Color</code> オブジェクト
      */
-    public static Color getColor(String colorString) {
+    public static Color getColor(final String colorString) {
         Color color = null;
         if ((colorString.startsWith("#")) && (colorString.length() == 7)) {
             int red = Integer.parseInt(colorString.substring(1, 3), 16);
