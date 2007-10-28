@@ -28,25 +28,25 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.seasar.framework.beans.BeanDesc;
 import org.seasar.framework.beans.factory.BeanDescFactory;
+import org.seasar.framework.exception.ResourceNotFoundRuntimeException;
 import org.seasar.framework.log.Logger;
 import org.seasar.framework.util.FieldUtil;
 import org.seasar.framework.util.ResourceUtil;
 
 /**
- * <code>Image</code> オブジェクトを管理するためのユーティリティクラスです。
+ * {@link Image} オブジェクトを管理するためのユーティリティクラスです。<br />
  * <p>
  * 本クラスは、クラスパス上のリソースとして存在するイメージファイルを読み込み、管理する機能を提供します。</br>
  * また、本クラスのメソッドに対してリソースのパスを指定する場合、先頭にスラッシュ(/)がついていてもいなくても同じパスとして扱います。</br>
- * たとえば、<code>&quot;org/seasar/jface/images/xxxImage.png&quot;</code> と
- * <code>&quot;/org/seasar/jface/images/xxxImage.png&quot;</code>
+ * たとえば、<code>&quot;org/seasar/uruma/images/xxxImage.png&quot;</code> と
+ * <code>&quot;/org/seasar/uruma/images/xxxImage.png&quot;</code>
  * は同じものとして扱います。
  * </p>
  * 
  * @author y-komori
- * 
  */
 public class ImageManager {
-    protected static final ImageRegistry imageRegistry = new ImageRegistry();
+    private static ImageRegistry imageRegistry = new ImageRegistry();
 
     protected static final Logger logger = Logger.getLogger(ImageManager.class);
 
@@ -54,36 +54,44 @@ public class ImageManager {
     }
 
     /**
-     * 指定されたキーで登録された画像の <code>Image</code> オブジェクトを返します。<br>
+     * {@link ImageManager} を初期化します。<br />
+     * 
+     * @param display
+     *            本クラスを使用する前に呼び出してください。
+     */
+    public static void init(final Display display) {
+        imageRegistry = new ImageRegistry(display);
+    }
+
+    /**
+     * 指定されたキーで登録された画像の {@link Image} オブジェクトを返します。<br />
      * 
      * @param key
      *            キー
-     * @return 見つかった <code>Image</code> オブジェクト。見つからない場合は<code>null</code>。
+     * @return 見つかった {@link Image} オブジェクト。見つからない場合は <code>null</code>。
      */
     public static Image getImage(final String key) {
         return imageRegistry.get(key);
     }
 
     /**
-     * 指定されたキーで登録された画像の <code>ImageDescriptor</code> オブジェクトを返します。<br>
+     * 指定されたキーで登録された画像の {@link ImageDescriptor} オブジェクトを返します。<br />
      * 
      * @param key
      *            キー
-     * @return 見つかった <code>ImageDescriptor</code> オブジェクト。見つからない場合は
-     *         <code>null</code>。
+     * @return 見つかった {@link ImageDescriptor} オブジェクト。見つからない場合は <code>null</code>。
      */
     public static ImageDescriptor getImageDescriptor(final String key) {
         return imageRegistry.getDescriptor(key);
     }
 
     /**
-     * <code>path</code> で指定された <code>Image</code>
-     * オブジェクトを検索し、存在しなければクラスパスからロードします。<br>
+     * <code>path</code> で指定された {@link Image} オブジェクトを検索し、存在しなければクラスパスからロードします。<br />
      * <p>
-     * 本メソッドでは、まず <code>path</code> をキーと見なしてレジストリから <code>Image</code>
-     * オブジェクトを検索します。 <code>Image</code> オブジェクトが見つからない場合、<code>path</code>
-     * で示されるリソースをクラスパスからロードして <code>path</code> をキーとしてレジストリに登録します。</br> この際、<code>path</code>
-     * は <code>/</code>(スラッシュ)で始まっていてもいなくても構いません。</br>
+     * 本メソッドでは、まず <code>path</code> をキーと見なしてレジストリから {@link Image}
+     * オブジェクトを検索します。 {@link Image} オブジェクトが見つからない場合、<code>path</code>
+     * で示されるリソースをクラスパスからロードして <code>path</code> をキーとしてレジストリに登録します。<br />
+     * この際、<code>path</code> は <code>/</code>(スラッシュ)で始まっていてもいなくても構いません。</br>
      * </p>
      * <dl>
      * <dt>【例】
@@ -94,14 +102,13 @@ public class ImageManager {
      * オブジェクトを検索します。
      * <li>見つからない場合、クラスパスから <code>icons/app.png</code> というリソースをロードします。
      * <li>ロードに成功すれば、<code>icons/app.png</code> というキーでレジストリに登録します。
-     * <li>ここで見つからない場合は、{@link org.seasar.framework.exception.ResourceNotFoundRuntimeException}
-     * をスローします。
+     * <li>ここで見つからない場合は、{@link ResourceNotFoundRuntimeException} をスローします。
      * </ul>
      * 
      * @param path
      *            イメージのパス/キー
-     * @return 見つかった <code>Image</code> オブジェクト
-     * @throws org.seasar.framework.exception.ResourceNotFoundRuntimeException
+     * @return 見つかった {@link Image} オブジェクト
+     * @throws ResourceNotFoundRuntimeException
      *             指定されたリソースが見つからなかった場合
      */
     public static Image loadImage(final String path) {
@@ -113,18 +120,18 @@ public class ImageManager {
     }
 
     /**
-     * <code>path</code> で指定された <code>ImageDescriptor</code>
-     * オブジェクトを検索し、存在しなければクラスパスからロードします。<br>
+     * <code>path</code> で指定された {@link ImageDescriptor}
+     * オブジェクトを検索し、存在しなければクラスパスからロードします。<br />
      * <p>
-     * <code>Image</code> オブジェクトではなく <code>ImageDescriptor</code>
-     * オブジェクトを返すという点を除き、本メソッドは loadImage() メソッドと同じです。<br />
-     * 詳細は loadImage() メソッドの説明をご覧ください。
+     * {@link Image} オブジェクトではなく {@link ImageDescriptor} オブジェクトを返すという点を除き、本メソッドは
+     * {@link #loadImage(String)} メソッドと同じです。<br />
+     * 詳細は {@link #loadImage(String)} メソッドの説明をご覧ください。
      * </p>
      * 
      * @param path
      *            イメージのパス/キー
-     * @return 見つかった <code>ImageDescriptor</code> オブジェクト
-     * @throws org.seasar.framework.exception.ResourceNotFoundRuntimeException
+     * @return 見つかった {@link ImageDescriptor} オブジェクト
+     * @throws ResourceNotFoundRuntimeException
      *             指定されたリソースが見つからなかった場合
      */
     public static ImageDescriptor loadImageDescriptor(final String path) {
@@ -136,19 +143,19 @@ public class ImageManager {
     }
 
     /**
-     * <code>Image</code> オブジェクトを登録します。<br>
+     * {@link Image} オブジェクトを登録します。<br />
      * <p>
      * <code>path</code> で示されるリソースをクラスパス上から読み込み、<code>key</code>
-     * で示されるキーでレジストリに登録します。</br> 既に同じキーで <code>Image</code>
-     * オブジェクトが登録されている場合、上書きします。</br>
+     * で示されるキーでレジストリに登録します。<br />
+     * 既に同じキーで {@link Image} オブジェクトが登録されている場合、上書きします。</br>
      * </p>
      * 
      * @param key
      *            キー
      * @param path
      *            イメージのパス
-     * @return 登録した <code>Image</code> オブジェクト
-     * @throws org.seasar.framework.exception.ResourceNotFoundRuntimeException
+     * @return 登録した {@link Image} オブジェクト
+     * @throws ResourceNotFoundRuntimeException
      *             指定されたリソースが見つからなかった場合
      */
     public static Image putImage(final String key, final String path) {
@@ -161,19 +168,19 @@ public class ImageManager {
     }
 
     /**
-     * <code>ImageDescriptor</code> オブジェクトを登録します。<br>
+     * <code>ImageDescriptor</code> オブジェクトを登録します。<br />
      * <p>
-     * <code>path</code> で示されるリソースをクラスパス上から読み込み、<code>ImageDescriptor</code>
-     * オブジェクトとして <code>key</code> で示されるキーでレジストリに登録します。</br> 既に同じキーで
-     * <code>ImageDescriptor</code> オブジェクトが登録されている場合、上書きします。</br>
+     * <code>path</code> で示されるリソースをクラスパス上から読み込み、{@link ImageDescriptor}
+     * オブジェクトとして <code>key</code> で示されるキーでレジストリに登録します。<br />
+     * 既に同じキーで {@link ImageDescriptor} オブジェクトが登録されている場合、上書きします。<br />
      * </p>
      * 
      * @param key
      *            キー
      * @param path
      *            リソースのパス
-     * @return 登録した <code>ImageDescriptor</code> オブジェクト
-     * @throws org.seasar.framework.exception.ResourceNotFoundRuntimeException
+     * @return 登録した {@link ImageDescriptor} オブジェクト
+     * @throws ResourceNotFoundRuntimeException
      *             指定されたリソースが見つからなかった場合
      */
     public static ImageDescriptor putImageDescriptor(final String key,
@@ -187,13 +194,13 @@ public class ImageManager {
     }
 
     /**
-     * <code>ResourceBundle</code> からイメージを読み込み、一括登録します。</br>
+     * {@link ResourceBundle} からイメージを読み込み、一括登録します。<br />
      * <p>
-     * 「key=path」の形式で記述されたプロパティファイルを元にした <code>ResourceBundle</code> から
-     * <code>Image</code> オブジェクトを一括して読み込みます。
+     * 「key=path」の形式で記述されたプロパティファイルを元にした {@link ResourceBundle} から {@link Image}
+     * オブジェクトを一括して読み込みます。
      * </p>
      * <p>
-     * 本メソッドではイメージを <code>ImageDescriptor</code> として登録します。
+     * 本メソッドではイメージを {@link ImageDescriptor} として登録します。
      * </p>
      * 
      * <p>
@@ -201,7 +208,7 @@ public class ImageManager {
      * </p>
      * 
      * <pre>
-     * ResourceBundle imageResources = ResourceBundle.getBundle(&quot;s2JFaceImages&quot;);
+     * ResourceBundle imageResources = ResourceBundle.getBundle(&quot;urumaImages&quot;);
      * ImageManager.loadImages(imageResources);
      * </pre>
      * 
@@ -218,13 +225,13 @@ public class ImageManager {
     }
 
     /**
-     * <code>ResourceBundle</code> からイメージを読み込み、一括登録します。</br>
+     * {@link ResourceBundle} からイメージを読み込み、一括登録します。<br />
      * <p>
-     * 「key=path」の形式で記述されたプロパティファイルを元にした <code>ResourceBundle</code> から
-     * <code>Image</code> オブジェクトを一括して読み込みます。
+     * 「key=path」の形式で記述されたプロパティファイルを元にした {@link ResourceBundle} から {@link Image}
+     * オブジェクトを一括して読み込みます。
      * </p>
      * <p>
-     * 本メソッドではイメージを <code>ImageDescriptor</code> として登録します。
+     * 本メソッドではイメージを {@link ImageDescriptor} として登録します。
      * </p>
      * 
      * @param baseName
@@ -236,21 +243,21 @@ public class ImageManager {
     }
 
     /**
-     * 指定されたクラスの定数フィールドに対して、<code>ImageManager</code>が
-     * 管理するオブジェクトをインジェクションします。</br> インジェクション対象となるのは、以下の条件を満たすフィールドです。</br>
+     * 指定されたクラスの定数フィールドに対して、 {@link ImageManager} が 管理するオブジェクトをインジェクションします。</br>
+     * インジェクション対象となるのは、以下の条件を満たすフィールドです。<br />
      * <p>
      * <ol>
      * <li><code>public static</code> な定数フィールドであること
-     * <li><code>Image</code>または <code>ImageDescriptor</code> 型のフィールドであること
+     * <li>{@link Image} または {@link ImageDescriptor} 型のフィールドであること
      * </ol>
      * </p>
-     * 以上の条件を満たすフィールドに対して、フィールド名をキーとして <code>ImageManager</code> が登録する
-     * <code>Image</code> または <code>ImageDescriptor</code>
-     * を検索し、見つかればインジェクションを行います。</br> 見つからなかった場合は、Warning ログを出力します。
+     * 以上の条件を満たすフィールドに対して、フィールド名をキーとして {@link ImageManager} が登録する {@link Image}
+     * または {@link ImageDescriptor} を検索し、見つかればインジェクションを行います。<br />
+     * 見つからなかった場合は、Warning ログを出力します。
      * <p>
-     * <b>【例】</b> </br> 以下の例では、<code>ImageHolder</code> クラスの フィールド、<code>IMAGE_A</code>
-     * と <code>IMAGE_B</code> に対して、<code>ImageManager</code>
-     * が管理するオブジェクトの中から、<code>IMAGE_A</code>、<code>IMAGE_B</code>
+     * <b>【例】</b><br />
+     * 以下の例では、<code>ImageHolder</code> クラスの フィールド、<code>IMAGE_A</code> と
+     * <code>IMAGE_B</code> に対して、 {@link ImageManager} が管理するオブジェクトの中から、<code>IMAGE_A</code>、<code>IMAGE_B</code>
      * という名前のキーで登録されたオブジェクトをインジェクションします。
      * 
      * <pre>
@@ -286,11 +293,16 @@ public class ImageManager {
     }
 
     /**
-     * <code>ImageManager</code> が管理する <code>ImageRegistry</code> を破棄します。
-     * 
+     * {@link ImageManager} が管理する {@link ImageRegistry} を破棄します。<br />
+     * <p>
+     * 再び {@link ImageManager} を使用したい場合、{@link #init(Display)} メソッドを呼び出してください。<br />
+     * </p>
      */
     public static void dispose() {
-        imageRegistry.dispose();
+        if (imageRegistry != null) {
+            imageRegistry.dispose();
+        }
+        imageRegistry = null;
     }
 
     protected static void injectField(final Class clazz, final Field field,
@@ -300,7 +312,7 @@ public class ImageManager {
         }
     }
 
-    protected static boolean validateMask(Field field) {
+    protected static boolean validateMask(final Field field) {
         final int MOD_EXPECTED = Modifier.PUBLIC | Modifier.STATIC;
         final int MOD_MASK = MOD_EXPECTED | Modifier.FINAL;
         return (field.getModifiers() & MOD_MASK) == MOD_EXPECTED;
@@ -311,7 +323,7 @@ public class ImageManager {
         return clazz.isAssignableFrom(target.getType());
     }
 
-    protected static void checkKey(String key) {
+    protected static void checkKey(final String key) {
         if (imageRegistry.get(key) != null) {
             imageRegistry.remove(key);
         }
