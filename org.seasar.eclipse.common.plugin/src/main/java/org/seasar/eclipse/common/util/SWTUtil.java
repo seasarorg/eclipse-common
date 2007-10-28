@@ -33,145 +33,148 @@ import org.seasar.framework.util.StringUtil;
  * @author y-komori
  */
 public class SWTUtil {
-    private static final Map constants = new HashMap();
+	private static final Map constants = new HashMap();
 
-    private static final Map colors = new HashMap();
+	private static final Map colorConstats = new HashMap();
 
-    private static final Map colorConstats = new HashMap();
+	static {
+		initialize();
+	}
 
-    static {
-        initialize();
-    }
+	private SWTUtil() {
+	}
 
-    private SWTUtil() {
-    }
+	private static synchronized void initialize() {
+		Field[] fields = SWT.class.getFields();
+		for (int i = 0; i < fields.length; i++) {
+			if (Modifier.isStatic(fields[i].getModifiers())
+					&& (fields[i].getType() == Integer.TYPE)) {
+				String name = fields[i].getName();
+				int constant = FieldUtil.getInt(fields[i]);
+				constants.put(name, new Integer(constant));
 
-    private static synchronized void initialize() {
-        Field[] fields = SWT.class.getFields();
-        for (int i = 0; i < fields.length; i++) {
-            if (Modifier.isStatic(fields[i].getModifiers())
-                    && (fields[i].getType() == Integer.TYPE)) {
-                String name = fields[i].getName();
-                int constant = FieldUtil.getInt(fields[i]);
-                constants.put(name, new Integer(constant));
+				if (name.startsWith("COLOR_")) {
+					String colorName = name.substring(6);
+					colorConstats.put(colorName, new Integer(constant));
+				}
+			}
+		}
+	}
 
-                if (name.startsWith("COLOR_")) {
-                    String colorName = name.substring(6);
-                    Color color = Display.getCurrent().getSystemColor(constant);
-                    colorConstats.put(colorName, constant);
-                }
-            }
-        }
-    }
+	/**
+	 * アンダースコアで区切られた文字列を、単語境界を大文字にした文字列に変換します。<br />
+	 * <p>
+	 * 【例】<br />
+	 * MOUSE_DOUBLE_CLICK -> mouseDoubleClick
+	 * </p>
+	 * 
+	 * @param name
+	 *            変換対象
+	 * @return 変換結果
+	 */
+	public static String convertConstantName(final String name) {
+		StringTokenizer st = new StringTokenizer(name, "_");
+		StringBuilder builder = new StringBuilder("");
+		while (st.hasMoreTokens()) {
+			builder.append(StringUtil.capitalize(st.nextToken().toLowerCase()));
+		}
+		return builder.toString();
+	}
 
-    /**
-     * アンダースコアで区切られた文字列を、単語境界を大文字にした文字列に変換します。<br />
-     * <p>
-     * 【例】MOUSE_DOUBLE_CLICK -> mouseDoubleClick
-     * </p>
-     * 
-     * @param name
-     *            変換対象
-     * @return 変換結果
-     */
-    public static String convertConstantName(final String name) {
-        StringTokenizer st = new StringTokenizer(name, "_");
-        StringBuilder builder = new StringBuilder("");
-        while (st.hasMoreTokens()) {
-            builder.append(StringUtil.capitalize(st.nextToken().toLowerCase()));
-        }
-        return builder.toString();
-    }
+	/**
+	 * {@link SWT} クラスの持つ定数を返します。<br>
+	 * 
+	 * @param name
+	 *            定数名
+	 * @return 値。存在しない定数名が指定された場合、<code>SWT.NONE</code>を返します。
+	 */
+	public static int getSWTConstant(final String name) {
+		int constant = SWT.NONE;
+		Integer constantObj = (Integer) constants.get(name);
+		if (constantObj != null) {
+			constant = constantObj.intValue();
+		}
+		return constant;
+	}
 
-    /**
-     * {@link SWT} クラスの持つ定数を返します。<br>
-     * 
-     * @param name
-     *            定数名
-     * @return 値。存在しない定数名が指定された場合、<code>SWT.NONE</code>を返します。
-     */
-    public static int getSWTConstant(final String name) {
-        int constant = SWT.NONE;
-        Integer constantObj = (Integer) constants.get(name);
-        if (constantObj != null) {
-            constant = constantObj.intValue();
-        }
-        return constant;
-    }
+	/**
+	 * カンマ区切りの定数からSWTのスタイルを計算します。<br>
+	 * 例えば以下のような入力に対して、本メソッドは
+	 * <code>SWT.HORIZONTAL | SWT.SHADOW_IN | SWT.CENTER</code>の計算結果を
+	 * 戻り値として返します。<br>
+	 * {@link SWT} クラスに定義されていない定数が指定された場合、無視されます。
+	 * 
+	 * 入力例:<code>"HORIZONTAL, SHADOW_IN, CENTER"</code><br>
+	 * 
+	 * @param styles
+	 *            カンマ区切りの定数。
+	 * @param defaultStyle
+	 *            <code>styles</code> が <code>null</code> だった場合に返すデフォルト値。
+	 * @return スタイル値。 引数が <code>null</code> の場合は <code>defalutStyle</code>
+	 *         を返します。
+	 */
+	public static int getStyle(final String styles, final int defaultStyle) {
+		int result = 0;
+		if (styles != null) {
+			StringTokenizer st = new StringTokenizer(styles, ",");
+			while (st.hasMoreTokens()) {
+				String style = st.nextToken().trim();
+				int constant = getSWTConstant(style);
+				if (constant != SWT.NULL) {
+					result |= constant;
+				}
+			}
+		} else {
+			result = defaultStyle;
+		}
+		return result;
+	}
 
-    /**
-     * カンマ区切りの定数からSWTのスタイルを計算します。<br>
-     * 例えば以下のような入力に対して、本メソッドは
-     * <code>SWT.HORIZONTAL | SWT.SHADOW_IN | SWT.CENTER</code>の計算結果を
-     * 戻り値として返します。<br>
-     * {@link SWT} クラスに定義されていない定数が指定された場合、無視されます。
-     * 
-     * 入力例:<code>"HORIZONTAL, SHADOW_IN, CENTER"</code><br>
-     * 
-     * @param styles
-     *            カンマ区切りの定数。
-     * @param defaultStyle
-     *            <code>styles</code> が <code>null</code> だった場合に返すデフォルト値。
-     * @return スタイル値。 引数が <code>null</code> の場合は <code>defalutStyle</code>
-     *         を返します。
-     */
-    public static int getStyle(final String styles, final int defaultStyle) {
-        int result = 0;
-        if (styles != null) {
-            StringTokenizer st = new StringTokenizer(styles, ",");
-            while (st.hasMoreTokens()) {
-                String style = st.nextToken().trim();
-                int constant = getSWTConstant(style);
-                if (constant != SWT.NULL) {
-                    result |= constant;
-                }
-            }
-        } else {
-            result = defaultStyle;
-        }
-        return result;
-    }
+	/**
+	 * カンマ区切りの定数からSWTのスタイルを計算します。<br>
+	 * 例えば以下のような入力に対して、本メソッドは
+	 * <code>SWT.HORIZONTAL | SWT.SHADOW_IN | SWT.CENTER</code>の計算結果を
+	 * 戻り値として返します。<br>
+	 * {@link SWT} クラスに定義されていない定数が指定された場合、無視されます。
+	 * 
+	 * 入力例:<code>"HORIZONTAL, SHADOW_IN, CENTER"</code><br>
+	 * 
+	 * @param styles
+	 *            カンマ区切りの定数。
+	 * @return スタイル値。 引数が <code>null</code> の場合は <code>SWT.NONE</code>
+	 *         を返します。
+	 */
+	public static int getStyle(final String styles) {
+		return getStyle(styles, SWT.NONE);
+	}
 
-    /**
-     * カンマ区切りの定数からSWTのスタイルを計算します。<br>
-     * 例えば以下のような入力に対して、本メソッドは
-     * <code>SWT.HORIZONTAL | SWT.SHADOW_IN | SWT.CENTER</code>の計算結果を
-     * 戻り値として返します。<br>
-     * {@link SWT} クラスに定義されていない定数が指定された場合、無視されます。
-     * 
-     * 入力例:<code>"HORIZONTAL, SHADOW_IN, CENTER"</code><br>
-     * 
-     * @param styles
-     *            カンマ区切りの定数。
-     * @return スタイル値。 引数が <code>null</code> の場合は <code>SWT.NONE</code>
-     *         を返します。
-     */
-    public static int getStyle(final String styles) {
-        return getStyle(styles, SWT.NONE);
-    }
-
-    /**
-     * {@link Color} オブジェクトを生成します。<br>
-     * <code>colorString</code> で指定された文字列から {@link Color} オブジェクトを生成します。<br>
-     * <code>colorString</code> は #RGB 形式または <code>red</code>、<code>blue</code>
-     * 等 {@link SWT} クラスの <code>COLOR_*</code>
-     * 定数で用意された文字列が指定できます(いずれも、大文字・小文字どちらも使用可能)。<br>
-     * 例: <code>#FF0000</code> を指定した場合、赤を表します。
-     * 
-     * @param colorString
-     *            色を表す文字列。
-     * @return <code>Color</code> オブジェクト
-     */
-    public static Color getColor(final String colorString) {
-        Color color = null;
-        if ((colorString.startsWith("#")) && (colorString.length() == 7)) {
-            int red = Integer.parseInt(colorString.substring(1, 3), 16);
-            int green = Integer.parseInt(colorString.substring(3, 5), 16);
-            int blue = Integer.parseInt(colorString.substring(5, 7), 16);
-            color = new Color(Display.getCurrent(), red, green, blue);
-        } else {
-            color = (Color) colors.get(colorString.toUpperCase());
-        }
-        return color;
-    }
+	/**
+	 * {@link Color} オブジェクトを生成します。<br>
+	 * <code>colorString</code> で指定された文字列から {@link Color} オブジェクトを生成します。<br>
+	 * <code>colorString</code> は #RGB 形式または <code>red</code>、<code>blue</code>
+	 * 等 {@link SWT} クラスの <code>COLOR_*</code>
+	 * 定数で用意された文字列が指定できます(いずれも、大文字・小文字どちらも使用可能)。<br>
+	 * 例: <code>#FF0000</code> を指定した場合、赤を表します。
+	 * 
+	 * @param colorString
+	 *            色を表す文字列。
+	 * @return <code>Color</code> オブジェクト
+	 */
+	public static Color getColor(final String colorString) {
+		Color color = ColorManager.getColor(colorString);
+		if (color == null) {
+			String symbolicName = colorString.toUpperCase();
+			Integer constant = (Integer) colorConstats.get(symbolicName);
+			if (constant != null) {
+				Display display = Display.getCurrent();
+				if (display != null) {
+					color = display.getSystemColor(constant.intValue());
+					ColorManager.putColor(symbolicName, color.getRGB());
+					color.dispose();
+					color = ColorManager.getColor(symbolicName);
+				}
+			}
+		}
+		return color;
+	}
 }
