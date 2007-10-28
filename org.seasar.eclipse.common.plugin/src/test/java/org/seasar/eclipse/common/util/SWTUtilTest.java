@@ -22,8 +22,9 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * @author y-komori
+ * {@link SWTUtil} のためのテストクラスです。<br />
  * 
+ * @author y-komori
  */
 public class SWTUtilTest extends TestCase {
 	private Display display;

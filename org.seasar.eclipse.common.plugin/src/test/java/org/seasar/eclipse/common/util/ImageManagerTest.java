@@ -23,177 +23,186 @@ import org.eclipse.swt.widgets.Display;
 import org.seasar.framework.exception.ResourceNotFoundRuntimeException;
 
 /**
- * @author y-komori
+ * {@link ImageManager} のためのテストクラスです。<br />
  * 
+ * @author y-komori
  */
 public class ImageManagerTest extends TestCase {
-    private Display display;
+	private Display display;
 
-    protected void setUp() throws Exception {
-        display = Display.getCurrent();
-        if (display == null) {
-            display = new Display();
-        }
-    }
+	protected void setUp() throws Exception {
+		display = Display.getCurrent();
+		if (display == null) {
+			display = new Display();
+			ImageManager.init(display);
+		}
+	}
 
-    protected void tearDown() throws Exception {
-        ImageManager.dispose();
-        if (display != null) {
-            display.dispose();
-        }
-    }
+	protected void tearDown() throws Exception {
+		ImageManager.dispose();
+		if (display != null) {
+			display.dispose();
+		}
+	}
 
-    public void testPutImage() {
-        Image image = ImageManager.putImage("ARG_IMG", "images/arg.gif");
-        Image getImage = ImageManager.getImage("ARG_IMG");
-        assertNotNull("1", getImage);
-        assertEquals("2", image, getImage);
+	public void testPutImage() {
+		Image image = ImageManager.putImage("ARG_IMG", "images/arg.gif");
+		Image getImage = ImageManager.getImage("ARG_IMG");
+		assertNotNull("1", getImage);
+		assertEquals("2", image, getImage);
 
-        // 登録した Image を ImageDecriptor として取得
-        assertNotNull("3", ImageManager.getImageDescriptor("ARG_IMG"));
+		// 登録した Image を ImageDecriptor として取得
+		assertNotNull("3", ImageManager.getImageDescriptor("ARG_IMG"));
 
-        ImageManager.putImage("COMPONENT_IMG", "/images/component.gif");
-        assertNotNull("4", ImageManager.getImage("ARG_IMG"));
+		ImageManager.putImage("COMPONENT_IMG", "/images/component.gif");
+		assertNotNull("4", ImageManager.getImage("ARG_IMG"));
 
-        try {
-            ImageManager.putImage("DUMMY_IMG", "dummy");
-            fail("5");
-        } catch (ResourceNotFoundRuntimeException ex) {
-            assertTrue(true);
-        }
-    }
+		try {
+			ImageManager.putImage("DUMMY_IMG", "dummy");
+			fail("5");
+		} catch (ResourceNotFoundRuntimeException ex) {
+			assertTrue(true);
+		}
+	}
 
-    public void testPutImageDescriptor() {
-        ImageDescriptor desc = ImageManager.putImageDescriptor("ARG_IMG",
-                "images/arg.gif");
-        ImageDescriptor getDesc = ImageManager.getImageDescriptor("ARG_IMG");
-        assertNotNull("1", desc);
-        assertEquals("2", desc, getDesc);
+	public void testPutImageDescriptor() {
+		ImageDescriptor desc = ImageManager.putImageDescriptor("ARG_IMG",
+				"images/arg.gif");
+		ImageDescriptor getDesc = ImageManager.getImageDescriptor("ARG_IMG");
+		assertNotNull("1", desc);
+		assertEquals("2", desc, getDesc);
 
-        // 登録した ImageDecriptor を Image として取得
-        assertNotNull("3", ImageManager.getImage("ARG_IMG"));
+		// 登録した ImageDecriptor を Image として取得
+		assertNotNull("3", ImageManager.getImage("ARG_IMG"));
 
-        try {
-            ImageManager.putImageDescriptor("DUMMY_IMG", "dummy");
-            fail();
-        } catch (ResourceNotFoundRuntimeException ex) {
-            assertTrue("4", true);
-        }
-    }
+		try {
+			ImageManager.putImageDescriptor("DUMMY_IMG", "dummy");
+			fail();
+		} catch (ResourceNotFoundRuntimeException ex) {
+			assertTrue("4", true);
+		}
+	}
 
-    public void testLoadImage() {
-        Image argImg1 = ImageManager.loadImage("images/arg.gif");
-        assertNotNull("1", argImg1);
-        Image argImg2 = ImageManager.loadImage("images/arg.gif");
-        assertNotNull("2", argImg2);
-        assertSame("3", argImg1, argImg2);
-    }
+	public void testLoadImage() {
+		Image argImg1 = ImageManager.loadImage("images/arg.gif");
+		assertNotNull("1", argImg1);
+		Image argImg2 = ImageManager.loadImage("images/arg.gif");
+		assertNotNull("2", argImg2);
+		assertSame("3", argImg1, argImg2);
+	}
 
-    public void testLoadImageDescriptor() {
-        ImageDescriptor desc1 = ImageManager
-                .loadImageDescriptor("images/arg.gif");
-        assertNotNull("1", desc1);
-        ImageDescriptor desc2 = ImageManager
-                .loadImageDescriptor("images/arg.gif");
-        assertNotNull("2", desc2);
-        assertSame("3", desc1, desc2);
-    }
+	public void testLoadImageDescriptor() {
+		ImageDescriptor desc1 = ImageManager
+				.loadImageDescriptor("images/arg.gif");
+		assertNotNull("1", desc1);
+		ImageDescriptor desc2 = ImageManager
+				.loadImageDescriptor("images/arg.gif");
+		assertNotNull("2", desc2);
+		assertSame("3", desc1, desc2);
+	}
 
-    public void testGetImage() {
-        assertNotNull("1", ImageManager.loadImage("images/container.gif"));
+	public void testGetImage() {
+		assertNotNull("1", ImageManager.loadImage("images/container.gif"));
 
-        try {
-            ImageManager.loadImage("DUMMY_IMG");
-            fail("2");
-        } catch (ResourceNotFoundRuntimeException ex) {
-            assertTrue(true);
-        }
-    }
+		try {
+			ImageManager.loadImage("DUMMY_IMG");
+			fail("2");
+		} catch (ResourceNotFoundRuntimeException ex) {
+			assertTrue(true);
+		}
+	}
 
-    public void testLoadImages() {
-        loadImages();
+	public void testLoadImages() {
+		loadImages();
 
-        assertNotNull("1", ImageManager.getImage("ARG_IMG"));
-        assertNotNull("2", ImageManager.getImage("COMPONENT_IMG"));
-        assertNotNull("3", ImageManager.getImage("CONTAINER_IMG"));
-        assertNotNull("4", ImageManager.getImage("INCLUDE_IMG"));
-        assertNotNull("5", ImageManager.getImage("PROPERTY_IMG"));
-    }
+		assertNotNull("1", ImageManager.getImage("ARG_IMG"));
+		assertNotNull("2", ImageManager.getImage("COMPONENT_IMG"));
+		assertNotNull("3", ImageManager.getImage("CONTAINER_IMG"));
+		assertNotNull("4", ImageManager.getImage("INCLUDE_IMG"));
+		assertNotNull("5", ImageManager.getImage("PROPERTY_IMG"));
+	}
 
-    public void testInjectImages() {
-        loadImages();
-        ImageManager.injectImages(Images.class);
+	public void testInjectImages() {
+		loadImages();
+		ImageManager.injectImages(Images.class);
 
-        assertNotNull("1", Images.ARG_IMG);
-        assertEquals("2", ImageManager.getImage("ARG_IMG"), Images.ARG_IMG);
+		assertNotNull("1", Images.ARG_IMG);
+		assertEquals("2", ImageManager.getImage("ARG_IMG"), Images.ARG_IMG);
 
-        assertNotNull("3", Images.COMPONENT_IMG);
+		assertNotNull("3", Images.COMPONENT_IMG);
 
-        assertNotNull("4", Images.CONTAINER_IMG);
-        assertEquals("5", ImageManager.getImage("CONTAINER_IMG"),
-                Images.CONTAINER_IMG);
+		assertNotNull("4", Images.CONTAINER_IMG);
+		assertEquals("5", ImageManager.getImage("CONTAINER_IMG"),
+				Images.CONTAINER_IMG);
 
-        assertNotNull("6", Images.INCLUDE_IMG);
-    }
+		assertNotNull("6", Images.INCLUDE_IMG);
+	}
 
-    public void testDispose() {
-        loadImages();
-        Image argImage = ImageManager.getImage("ARG_IMG");
-        Image containerImage = ImageManager.getImage("CONTAINER_IMG");
-        assertNotNull("1", argImage);
-        assertNotNull("2", containerImage);
+	public void testDispose() {
+		loadImages();
+		Image argImage = ImageManager.getImage("ARG_IMG");
+		Image containerImage = ImageManager.getImage("CONTAINER_IMG");
+		assertNotNull("1", argImage);
+		assertNotNull("2", containerImage);
 
-        ImageManager.dispose();
+		ImageManager.dispose();
 
-        assertNull("3", ImageManager.getImage("ARG_IMG"));
-        assertNull("4", ImageManager.getImage("CONTAINER_IMG"));
-    }
+		try {
+			ImageManager.getImage("ARG_IMG");
+			fail("3");
+		} catch (NullPointerException ex) {
+			assertTrue(true);
+		}
 
-    public void testNormalizePath() {
-        assertEquals(
-                "1",
-                "org/seasar/eclipse/common/util/ImageManager",
-                ImageManager
-                        .normalizePath("/org/seasar/eclipse/common/util/ImageManager"));
-        assertEquals(
-                "2",
-                "org/seasar/eclipse/common/util/ImageManager",
-                ImageManager
-                        .normalizePath("org/seasar/eclipse/common/util/ImageManager"));
-        assertEquals("3", "", ImageManager.normalizePath("/"));
-        assertNull("4", ImageManager.normalizePath(null));
-    }
+		assertTrue("4", argImage.isDisposed());
+		assertTrue("5", containerImage.isDisposed());
+	}
 
-    protected void loadImages() {
-        ImageManager
-                .loadImages("org/seasar/eclipse/common/util/ImageManagerTest");
-    }
+	public void testNormalizePath() {
+		assertEquals(
+				"1",
+				"org/seasar/eclipse/common/util/ImageManager",
+				ImageManager
+						.normalizePath("/org/seasar/eclipse/common/util/ImageManager"));
+		assertEquals(
+				"2",
+				"org/seasar/eclipse/common/util/ImageManager",
+				ImageManager
+						.normalizePath("org/seasar/eclipse/common/util/ImageManager"));
+		assertEquals("3", "", ImageManager.normalizePath("/"));
+		assertNull("4", ImageManager.normalizePath(null));
+	}
 
-    public static class Images {
-        public static Image ARG_IMG;
+	protected void loadImages() {
+		ImageManager
+				.loadImages("org/seasar/eclipse/common/util/ImageManagerTest");
+	}
 
-        public static ImageDescriptor COMPONENT_IMG;
+	public static class Images {
+		public static Image ARG_IMG;
 
-        public static Image CONTAINER_IMG;
+		public static ImageDescriptor COMPONENT_IMG;
 
-        public static ImageDescriptor INCLUDE_IMG;
+		public static Image CONTAINER_IMG;
 
-        public static Image DUMMY_IMAGE;
+		public static ImageDescriptor INCLUDE_IMG;
 
-        public static ImageDescriptor DUMMY_IMAGE_DESC;
+		public static Image DUMMY_IMAGE;
 
-        public static final Image NO_TARGET_1 = null;
+		public static ImageDescriptor DUMMY_IMAGE_DESC;
 
-        private Image NO_TARGET_2;
+		public static final Image NO_TARGET_1 = null;
 
-        private static Image NO_TARGET_3;
+		private Image NO_TARGET_2;
 
-        protected Image NO_TARGET_4;
+		private static Image NO_TARGET_3;
 
-        protected static Image NO_TARGET_5;
+		protected Image NO_TARGET_4;
 
-        Image NO_TARGET_6;
+		protected static Image NO_TARGET_5;
 
-        static Image NO_TARGET_7;
-    }
+		Image NO_TARGET_6;
+
+		static Image NO_TARGET_7;
+	}
 }
