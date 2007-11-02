@@ -41,10 +41,11 @@ public class ResourceTreeSelectionDialog extends ElementTreeSelectionDialog {
 
     /**
      * @param parent
-     * @param labelProvider
-     * @param contentProvider
+     * @param root
+     * @param flags
      */
-    public ResourceTreeSelectionDialog(Shell parent, IContainer root, int flags) {
+    public ResourceTreeSelectionDialog(final Shell parent,
+            final IContainer root, final int flags) {
         super(parent, new ResourceLabelProvider(),
                 new ResourceTreeContentProvider(flags));
         setInput(root);
@@ -52,7 +53,8 @@ public class ResourceTreeSelectionDialog extends ElementTreeSelectionDialog {
 
     private static class ResourceLabelProvider extends LabelProvider implements
             ILabelProvider {
-        public Image getImage(Object element) {
+        @Override
+        public Image getImage(final Object element) {
             Image result = null;
             if (element instanceof IResource) {
                 IResource r = (IResource) element;
@@ -68,7 +70,8 @@ public class ResourceTreeSelectionDialog extends ElementTreeSelectionDialog {
             return result;
         }
 
-        public String getText(Object element) {
+        @Override
+        public String getText(final Object element) {
             if (element instanceof IResource) {
                 IResource r = (IResource) element;
                 return r.getName();
@@ -81,7 +84,7 @@ public class ResourceTreeSelectionDialog extends ElementTreeSelectionDialog {
             ITreeContentProvider {
         private int flags = IResource.NONE;
 
-        public ResourceTreeContentProvider(int flags) {
+        public ResourceTreeContentProvider(final int flags) {
             this.flags = flags;
         }
 
@@ -90,7 +93,7 @@ public class ResourceTreeSelectionDialog extends ElementTreeSelectionDialog {
          * 
          * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
          */
-        public Object[] getChildren(Object parentElement) {
+        public Object[] getChildren(final Object parentElement) {
             if (parentElement instanceof IContainer) {
                 IContainer c = (IContainer) parentElement;
                 return members(c);
@@ -103,7 +106,7 @@ public class ResourceTreeSelectionDialog extends ElementTreeSelectionDialog {
          * 
          * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
          */
-        public Object getParent(Object element) {
+        public Object getParent(final Object element) {
             if (element instanceof IResource) {
                 IResource r = (IResource) element;
                 return r.getParent();
@@ -116,7 +119,7 @@ public class ResourceTreeSelectionDialog extends ElementTreeSelectionDialog {
          * 
          * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
          */
-        public boolean hasChildren(Object element) {
+        public boolean hasChildren(final Object element) {
             if (element instanceof IResource) {
                 IResource r = (IResource) element;
                 return r.getType() == IResource.PROJECT
@@ -139,7 +142,8 @@ public class ResourceTreeSelectionDialog extends ElementTreeSelectionDialog {
          * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
          *      java.lang.Object, java.lang.Object)
          */
-        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        public void inputChanged(final Viewer viewer, final Object oldInput,
+                final Object newInput) {
         }
 
         /*
@@ -147,7 +151,7 @@ public class ResourceTreeSelectionDialog extends ElementTreeSelectionDialog {
          * 
          * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
          */
-        public Object[] getElements(Object inputElement) {
+        public Object[] getElements(final Object inputElement) {
             if (inputElement instanceof IContainer) {
                 IContainer c = (IContainer) inputElement;
                 return members(c);
@@ -155,7 +159,7 @@ public class ResourceTreeSelectionDialog extends ElementTreeSelectionDialog {
             return null;
         }
 
-        private Object[] members(IContainer c) {
+        private Object[] members(final IContainer c) {
             final List result = new ArrayList();
             try {
                 IResource[] members = c.members();
