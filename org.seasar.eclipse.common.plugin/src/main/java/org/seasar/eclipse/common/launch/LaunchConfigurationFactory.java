@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
@@ -38,12 +38,12 @@ public class LaunchConfigurationFactory {
                     .getLaunchConfigurationType(handler.getTypeName());
             ILaunchConfiguration[] configs = manager
                     .getLaunchConfigurations(type);
-            for (int i = 0; i < configs.length; i++) {
-                if (configs[i].getName().equals(handler.getConfigName())) {
-                    if (handler.equals(configs[i])) {
-                        config = configs[i];
+            for (ILaunchConfiguration element : configs) {
+                if (element.getName().equals(handler.getConfigName())) {
+                    if (handler.equals(element)) {
+                        config = element;
                     } else {
-                        configs[i].delete();
+                        element.delete();
                     }
                     break;
                 }

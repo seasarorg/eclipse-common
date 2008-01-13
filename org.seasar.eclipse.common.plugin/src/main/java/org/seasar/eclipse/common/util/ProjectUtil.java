@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
@@ -45,20 +45,18 @@ import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
  */
 public class ProjectUtil {
 
-    private static List getCommands(IProjectDescription desc, String[] ignore)
-            throws CoreException {
-        ICommand[] commands = desc.getBuildSpec();
-        List newCommands = new ArrayList();
-        for (int i = 0; i < commands.length; i++) {
+    private static List<ICommand> getCommands(IProjectDescription desc, String[] ignores) {
+        List<ICommand> newCommands = new ArrayList<ICommand>();
+        for (ICommand command : desc.getBuildSpec()) {
             boolean flag = true;
-            for (int k = 0; k < ignore.length; k++) {
-                if (commands[i].getBuilderName().equals(ignore[k])) {
+            for (String ignore : ignores) {
+                if (command.getBuilderName().equals(ignore)) {
                     flag = false;
                     break;
                 }
             }
             if (flag) {
-                newCommands.add(commands[i]);
+                newCommands.add(command);
             } else {
                 flag = true;
             }
@@ -66,18 +64,17 @@ public class ProjectUtil {
         return newCommands;
     }
 
-    private static void setCommands(IProjectDescription desc, List newCommands) {
-        desc.setBuildSpec((ICommand[]) newCommands
-                .toArray(new ICommand[newCommands.size()]));
+    private static void setCommands(IProjectDescription desc, List<ICommand> newCommands) {
+        desc.setBuildSpec(newCommands.toArray(new ICommand[newCommands.size()]));
     }
 
-    public static void addBuilders(IProject project, String[] id)
+    public static void addBuilders(IProject project, String[] ids)
             throws CoreException {
         IProjectDescription desc = project.getDescription();
-        List newCommands = getCommands(desc, id);
-        for (int i = 0; i < id.length; i++) {
+        List<ICommand> newCommands = getCommands(desc, ids);
+        for (String id : ids) {
             ICommand command = desc.newCommand();
-            command.setBuilderName(id[i]);
+            command.setBuilderName(id);
             newCommands.add(command);
         }
         setCommands(desc, newCommands);
@@ -87,7 +84,7 @@ public class ProjectUtil {
     public static void removeBuilders(IProject project, String[] id)
             throws CoreException {
         IProjectDescription desc = project.getDescription();
-        List newCommands = getCommands(desc, id);
+        List<ICommand> newCommands = getCommands(desc, id);
         setCommands(desc, newCommands);
         project.setDescription(desc, null);
     }
@@ -188,7 +185,7 @@ public class ProjectUtil {
         return JavaCore.create(workspace.getRoot());
     }
 
-    public static IJavaProject getJavaProject(IPath path) throws CoreException {
+    public static IJavaProject getJavaProject(IPath path) {
         IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
                 path.segment(0));
         return JavaCore.create(project);
@@ -221,10 +218,12 @@ public class ProjectUtil {
         }
 
         StringBuffer buffer = new StringBuffer(tabs + spaces);
-        for (int i = 0; i < tabs; i++)
+        for (int i = 0; i < tabs; i++) {
             buffer.append('\t');
-        for (int i = 0; i < spaces; i++)
+        }
+        for (int i = 0; i < spaces; i++) {
             buffer.append(' ');
+        }
         return buffer.toString();
     }
 
@@ -245,10 +244,11 @@ public class ProjectUtil {
          */
         String key;
         if (JavaCore.SPACE.equals(getCoreOption(project,
-                DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR)))
+                DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR))) {
             key = DefaultCodeFormatterConstants.FORMATTER_INDENTATION_SIZE;
-        else
+        } else {
             key = DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE;
+        }
 
         return getCoreOption(project, key, 4);
     }
@@ -256,10 +256,11 @@ public class ProjectUtil {
     public static int getIndentWidth(IJavaProject project) {
         String key;
         if (DefaultCodeFormatterConstants.MIXED.equals(getCoreOption(project,
-                DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR)))
+                DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR))) {
             key = DefaultCodeFormatterConstants.FORMATTER_INDENTATION_SIZE;
-        else
+        } else {
             key = DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE;
+        }
 
         return getCoreOption(project, key, 4);
     }
@@ -273,19 +274,22 @@ public class ProjectUtil {
     }
 
     public static String getCoreOption(IJavaProject project, String key) {
-        if (project == null)
+        if (project == null) {
             return JavaCore.getOption(key);
+        }
         return project.getOption(key, true);
     }
 
     public static String getProjectLineDelimiter(IJavaProject javaProject) {
         IProject project = null;
-        if (javaProject != null)
+        if (javaProject != null) {
             project = javaProject.getProject();
+        }
 
         String lineDelimiter = getLineDelimiterPreference(project);
-        if (lineDelimiter != null)
+        if (lineDelimiter != null) {
             return lineDelimiter;
+        }
 
         return System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
     }
@@ -298,8 +302,9 @@ public class ProjectUtil {
             String lineDelimiter = Platform.getPreferencesService().getString(
                     Platform.PI_RUNTIME, Platform.PREF_LINE_SEPARATOR, null,
                     scopeContext);
-            if (lineDelimiter != null)
+            if (lineDelimiter != null) {
                 return lineDelimiter;
+            }
         }
         // workspace preference
         scopeContext = new IScopeContext[] { new InstanceScope() };
@@ -322,7 +327,7 @@ public class ProjectUtil {
 
     public static IPackageFragmentRoot[] getSrcPackageFragmentRoot(
             IJavaProject javap) throws CoreException {
-        List result = new ArrayList();
+        List<IPackageFragmentRoot> result = new ArrayList<IPackageFragmentRoot>();
         IPackageFragmentRoot[] roots = javap.getPackageFragmentRoots();
         for (int i = 0; roots != null && i < roots.length; i++) {
             IPackageFragmentRoot root = roots[i];
@@ -330,23 +335,21 @@ public class ProjectUtil {
                 result.add(root);
             }
         }
-        return (IPackageFragmentRoot[]) result
-                .toArray(new IPackageFragmentRoot[result.size()]);
+        return result.toArray(new IPackageFragmentRoot[result.size()]);
     }
 
     public static IPath[] getOutputLocations(IJavaProject project)
             throws CoreException {
-        List result = new ArrayList();
+        List<IPath> result = new ArrayList<IPath>();
         result.add(project.getOutputLocation());
         IClasspathEntry[] entries = project.getRawClasspath();
-        for (int i = 0; i < entries.length; i++) {
-            IClasspathEntry entry = entries[i];
+        for (IClasspathEntry entry : entries) {
             if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
                 result.add(entry.getOutputLocation());
             }
         }
 
-        return (IPath[]) result.toArray(new IPath[result.size()]);
+        return result.toArray(new IPath[result.size()]);
     }
 
     public static IProject getCurrentSelectedProject() {

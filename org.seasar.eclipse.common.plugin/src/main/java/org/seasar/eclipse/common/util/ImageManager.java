@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
@@ -361,7 +361,7 @@ public class ImageManager {
         return (field.getModifiers() & MOD_MASK) == MOD_EXPECTED;
     }
 
-    protected static boolean isAssignableFrom(final Class clazz,
+    protected static boolean isAssignableFrom(final Class<?> clazz,
             final Field target) {
         return clazz.isAssignableFrom(target.getType());
     }
@@ -376,11 +376,9 @@ public class ImageManager {
         if ((path != null) && (path.startsWith("/"))) {
             if (path.length() > 1) {
                 return path.substring(1);
-            } else {
-                return "";
             }
-        } else {
-            return path;
+			return "";
         }
+		return path;
     }
 }

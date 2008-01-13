@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
@@ -33,9 +33,9 @@ import org.seasar.framework.util.StringUtil;
  * @author y-komori
  */
 public class SWTUtil {
-	private static final Map constants = new HashMap();
+	private static final Map<String, Integer> constants = new HashMap<String, Integer>();
 
-	private static final Map colorConstats = new HashMap();
+	private static final Map<String, Integer> colorConstats = new HashMap<String, Integer>();
 
 	static {
 		initialize();
@@ -46,11 +46,11 @@ public class SWTUtil {
 
 	private static synchronized void initialize() {
 		Field[] fields = SWT.class.getFields();
-		for (int i = 0; i < fields.length; i++) {
-			if (Modifier.isStatic(fields[i].getModifiers())
-					&& (fields[i].getType() == Integer.TYPE)) {
-				String name = fields[i].getName();
-				int constant = FieldUtil.getInt(fields[i]);
+		for (Field field : fields) {
+			if (Modifier.isStatic(field.getModifiers())
+					&& (field.getType() == Integer.TYPE)) {
+				String name = field.getName();
+				int constant = FieldUtil.getInt(field);
 				constants.put(name, new Integer(constant));
 
 				if (name.startsWith("COLOR_")) {
@@ -90,7 +90,7 @@ public class SWTUtil {
 	 */
 	public static int getSWTConstant(final String name) {
 		int constant = SWT.NONE;
-		Integer constantObj = (Integer) constants.get(name);
+		Integer constantObj = constants.get(name);
 		if (constantObj != null) {
 			constant = constantObj.intValue();
 		}
@@ -164,7 +164,7 @@ public class SWTUtil {
 		Color color = ColorManager.getColor(colorString);
 		if (color == null) {
 			String symbolicName = colorString.toUpperCase();
-			Integer constant = (Integer) colorConstats.get(symbolicName);
+			Integer constant = colorConstats.get(symbolicName);
 			if (constant != null) {
 				Display display = Display.getCurrent();
 				if (display != null) {

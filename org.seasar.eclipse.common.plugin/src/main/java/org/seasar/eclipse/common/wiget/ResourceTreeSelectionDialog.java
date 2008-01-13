@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
@@ -53,7 +53,8 @@ public class ResourceTreeSelectionDialog extends ElementTreeSelectionDialog {
 
 	private static class ResourceLabelProvider extends LabelProvider implements
 			ILabelProvider {
-		public Image getImage(final Object element) {
+		@Override
+        public Image getImage(final Object element) {
 			Image result = null;
 			if (element instanceof IResource) {
 				IResource r = (IResource) element;
@@ -69,7 +70,8 @@ public class ResourceTreeSelectionDialog extends ElementTreeSelectionDialog {
 			return result;
 		}
 
-		public String getText(final Object element) {
+		@Override
+        public String getText(final Object element) {
 			if (element instanceof IResource) {
 				IResource r = (IResource) element;
 				return r.getName();
@@ -158,11 +160,9 @@ public class ResourceTreeSelectionDialog extends ElementTreeSelectionDialog {
 		}
 
 		private Object[] members(final IContainer c) {
-			final List result = new ArrayList();
+			final List<IResource> result = new ArrayList<IResource>();
 			try {
-				IResource[] members = c.members();
-				for (int i = 0; i < members.length; i++) {
-					IResource resource = members[i];
+				for (IResource resource : c.members()) {
 					if ((resource.getType() & flags) != 0) {
 						result.add(resource);
 					}

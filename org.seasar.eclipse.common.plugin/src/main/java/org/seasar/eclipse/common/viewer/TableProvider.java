@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
@@ -41,10 +41,9 @@ public class TableProvider extends LabelProvider implements
     public TableProvider(TableViewer viewer, ColumnDescriptor[] cds) {
         this.viewer = viewer;
         this.columnDescs = new ArrayMap(cds.length);
-        List keys = new ArrayList(cds.length);
-        List editors = new ArrayList(cds.length);
-        for (int i = 0; i < cds.length; i++) {
-            ColumnDescriptor cd = cds[i];
+        List<String> keys = new ArrayList<String>(cds.length);
+        List<CellEditor> editors = new ArrayList<CellEditor>(cds.length);
+        for (ColumnDescriptor cd : cds) {
             String name = cd.getName();
             if (columnDescs.containsKey(name)) {
                 name = name + "@" + System.identityHashCode(cd);
@@ -53,9 +52,9 @@ public class TableProvider extends LabelProvider implements
             keys.add(name);
             editors.add(cd.getCellEditor());
         }
-        this.viewer.setColumnProperties((String[]) keys.toArray(new String[keys
+        this.viewer.setColumnProperties(keys.toArray(new String[keys
                 .size()]));
-        this.viewer.setCellEditors((CellEditor[]) editors
+        this.viewer.setCellEditors(editors
                 .toArray(new CellEditor[editors.size()]));
         this.viewer.setCellModifier(this);
     }
