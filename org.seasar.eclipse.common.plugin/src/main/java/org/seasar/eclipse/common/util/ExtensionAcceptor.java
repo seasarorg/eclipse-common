@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
@@ -32,12 +32,10 @@ public class ExtensionAcceptor {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IExtensionPoint point = registry.getExtensionPoint(namespace,
                 extensionPointName);
-        IExtension[] extensions = point.getExtensions();
-        for (int i = 0; i < extensions.length; i++) {
-            IConfigurationElement[] elements = extensions[i]
-                    .getConfigurationElements();
-            for (int j = 0; j < elements.length; j++) {
-                visitor.visit(elements[j]);
+        
+        for (IExtension extension : point.getExtensions()) {
+            for (IConfigurationElement element : extension.getConfigurationElements()) {
+                visitor.visit(element);
             }
         }
 
