@@ -56,8 +56,11 @@ public class SWTUtilTest extends AbstractShellTest {
     }
 
     public void testGetColor() {
-        assertEquals(new Color(display, 255, 0, 0), SWTUtil.getColor("#FF0000"));
-        assertEquals(new Color(display, 0, 255, 0), SWTUtil.getColor("#00FF00"));
-        assertEquals(new Color(display, 0, 0, 255), SWTUtil.getColor("#0000FF"));
+        assertEquals((new Color(display, 255, 0, 0)).toString(), SWTUtil
+                .getColor("#FF0000").toString());
+        assertEquals((new Color(display, 0, 255, 0)).toString(), SWTUtil
+                .getColor("#00FF00").toString());
+        assertEquals((new Color(display, 0, 0, 255)).toString(), SWTUtil
+                .getColor("#0000FF").toString());
     }
 }
