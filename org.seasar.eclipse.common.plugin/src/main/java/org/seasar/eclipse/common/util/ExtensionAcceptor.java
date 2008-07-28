@@ -22,11 +22,17 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 
 /**
+ * 拡張ポイント読み出しアクセプタ。
  * @author taichi
- * 
  */
 public class ExtensionAcceptor {
 
+	/**
+	 * 拡張ポイントに対して設定された拡張に対するビジターアクセプタ。
+	 * @param namespace 名前空間＝プラグインID
+	 * @param extensionPointName 拡張ポイント名
+	 * @param visitor 拡張ポイントビジター
+	 */
     public static void accept(String namespace, String extensionPointName,
             ExtensionVisitor visitor) {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
@@ -41,8 +47,18 @@ public class ExtensionAcceptor {
 
     }
 
+	/**
+	 * 拡張ポイントビジターインターフェイス。
+	 * @author taichi
+	 */
     public interface ExtensionVisitor {
+
+    	/**
+		 * 処理内容を記述するメソッド。
+		 * @param e 拡張定義
+		 */
         void visit(IConfigurationElement e);
+
     }
 
 }
