@@ -34,18 +34,20 @@ import org.seasar.framework.exception.ResourceNotFoundRuntimeException;
 import org.seasar.framework.log.Logger;
 import org.seasar.framework.util.FieldUtil;
 import org.seasar.framework.util.ResourceUtil;
+import org.seasar.framework.util.URLUtil;
 
 /**
  * {@link Image} オブジェクトを管理するためのユーティリティクラスです。<br />
  * <p>
  * 本クラスは、クラスパス上のリソースとして存在するイメージファイルを読み込み、管理する機能を提供します。</br>
- * また、本クラスのメソッドに対してリソースのパスを指定する場合、先頭にスラッシュ(/)がついていてもいなくても同じパスとして扱います。</br>
- * たとえば、<code>&quot;org/seasar/uruma/images/xxxImage.png&quot;</code> と
- * <code>&quot;/org/seasar/uruma/images/xxxImage.png&quot;</code>
- * は同じものとして扱います。
+ * また、本クラスのメソッドに対してリソースのパスを指定する場合、先頭にスラッシュ(/)がついていてもいなくても同じパスとして扱います。</br> たとえば、
+ * {@code "org/seasar/uruma/images/xxxImage.png"} と {@code
+ * "/org/seasar/uruma/images/xxxImage.png"} は同じものとして扱います。
  * </p>
  * 
  * @author y-komori
+ * @author $Author$
+ * @version $Revision$ $Date$
  */
 public class ImageManager {
     private static ImageRegistry imageRegistry = new ImageRegistry();
@@ -59,7 +61,7 @@ public class ImageManager {
      * {@link ImageManager} を初期化します。<br />
      * 
      * @param display
-     *            本クラスを使用する前に呼び出してください。
+     *        本クラスを使用する前に呼び出してください。
      */
     public static void init(final Display display) {
         imageRegistry = new ImageRegistry(display);
@@ -69,7 +71,7 @@ public class ImageManager {
      * 指定されたキーで登録された画像の {@link Image} オブジェクトを返します。<br />
      * 
      * @param key
-     *            キー
+     *        キー
      * @return 見つかった {@link Image} オブジェクト。見つからない場合は <code>null</code>。
      */
     public static Image getImage(final String key) {
@@ -80,7 +82,7 @@ public class ImageManager {
      * 指定されたキーで登録された画像の {@link ImageDescriptor} オブジェクトを返します。<br />
      * 
      * @param key
-     *            キー
+     *        キー
      * @return 見つかった {@link ImageDescriptor} オブジェクト。見つからない場合は <code>null</code>。
      */
     public static ImageDescriptor getImageDescriptor(final String key) {
@@ -88,30 +90,29 @@ public class ImageManager {
     }
 
     /**
-     * <code>path</code> で指定された {@link Image} オブジェクトを検索し、存在しなければクラスパスからロードします。<br />
+     * {@code path} で指定された {@link Image} オブジェクトを検索し、存在しなければクラスパスからロードします。<br />
      * <p>
-     * 本メソッドでは、まず <code>path</code> をキーと見なしてレジストリから {@link Image}
-     * オブジェクトを検索します。 {@link Image} オブジェクトが見つからない場合、<code>path</code>
-     * で示されるリソースをクラスパスからロードして <code>path</code> をキーとしてレジストリに登録します。<br />
-     * この際、<code>path</code> は <code>/</code>(スラッシュ)で始まっていてもいなくても構いません。</br>
+     * 本メソッドでは、まず {@code path} をキーと見なしてレジストリから {@link Image} オブジェクトを検索します。
+     * {@link Image} オブジェクトが見つからない場合、{@code path} で示されるリソースをクラスパスからロードして {@code
+     * path} をキーとしてレジストリに登録します。<br />
+     * この際、{@code path} は <code>/</code>(スラッシュ)で始まっていてもいなくても構いません。</br>
      * </p>
      * <dl>
      * <dt>【例】
-     * <dd> loadImage("icons/app.png");
+     * <dd>loadImage("icons/app.png");
      * </dl>
      * <ul>
-     * <li>まず、レジストリに対して <code>icons/app.png</code> というキーで <code>Image</code>
-     * オブジェクトを検索します。
-     * <li>見つからない場合、クラスパスから <code>icons/app.png</code> というリソースをロードします。
-     * <li>ロードに成功すれば、<code>icons/app.png</code> というキーでレジストリに登録します。
+     * <li>まず、レジストリに対して {@code icons/app.png} というキーで {@link Image} オブジェクトを検索します。
+     * <li>見つからない場合、クラスパスから {@code icons/app.png} というリソースをロードします。
+     * <li>ロードに成功すれば、{@code icons/app.png} というキーでレジストリに登録します。
      * <li>ここで見つからない場合は、{@link ResourceNotFoundRuntimeException} をスローします。
      * </ul>
      * 
      * @param path
-     *            イメージのパス/キー
+     *        イメージのパス/キー
      * @return 見つかった {@link Image} オブジェクト
      * @throws ResourceNotFoundRuntimeException
-     *             指定されたリソースが見つからなかった場合
+     *         指定されたリソースが見つからなかった場合
      */
     public static Image loadImage(final String path) {
         Image image = getImage(path);
@@ -122,7 +123,30 @@ public class ImageManager {
     }
 
     /**
-     * <code>path</code> で指定された {@link ImageDescriptor}
+     * {@code url} で指定された {@link Image} オブジェクトを検索し、存在しなければクラスパスからロードします。<br />
+     * <p>
+     * 本メソッドでは、まず与えられたキーによってレジストリから {@link Image} オブジェクトを検索します。<br />
+     * 見つからない場合、{@code url} で示されるリソースをロードして与えられたキーで レジストリに登録します。<br />
+     * </p>
+     * 
+     * @param key
+     *        キー
+     * @param url
+     *        イメージの URL
+     * @return 見つかった {@link Image} オブジェクト
+     * @throws ResourceNotFoundRuntimeException
+     *         指定されたリソースが見つからなかった場合
+     */
+    public static Image loadImage(final String key, final URL url) {
+        Image image = getImage(key);
+        if (image == null) {
+            image = putImage(key, url);
+        }
+        return image;
+    }
+
+    /**
+     * {@code path} で指定された {@link ImageDescriptor}
      * オブジェクトを検索し、存在しなければクラスパスからロードします。<br />
      * <p>
      * {@link Image} オブジェクトではなく {@link ImageDescriptor} オブジェクトを返すという点を除き、本メソッドは
@@ -131,10 +155,10 @@ public class ImageManager {
      * </p>
      * 
      * @param path
-     *            イメージのパス/キー
+     *        イメージのパス/キー
      * @return 見つかった {@link ImageDescriptor} オブジェクト
      * @throws ResourceNotFoundRuntimeException
-     *             指定されたリソースが見つからなかった場合
+     *         指定されたリソースが見つからなかった場合
      */
     public static ImageDescriptor loadImageDescriptor(final String path) {
         ImageDescriptor descriptor = getImageDescriptor(path);
@@ -147,23 +171,45 @@ public class ImageManager {
     /**
      * {@link Image} オブジェクトを登録します。<br />
      * <p>
-     * <code>path</code> で示されるリソースをクラスパス上から読み込み、<code>key</code>
-     * で示されるキーでレジストリに登録します。<br />
+     * {@code path} で示されるリソースをクラスパス上から読み込み、{@code key} で示されるキーでレジストリに登録します。 <br />
      * 既に同じキーで {@link Image} オブジェクトが登録されている場合、上書きします。</br>
      * </p>
      * 
      * @param key
-     *            キー
+     *        キー
      * @param path
-     *            イメージのパス
+     *        イメージのパス
      * @return 登録した {@link Image} オブジェクト
      * @throws ResourceNotFoundRuntimeException
-     *             指定されたリソースが見つからなかった場合
+     *         指定されたリソースが見つからなかった場合
      */
     public static Image putImage(final String key, final String path) {
-        checkKey(key);
-
         InputStream is = ResourceUtil.getResourceAsStream(normalizePath(path));
+        return putImage(key, is);
+    }
+
+    /**
+     * {@link Image} オブジェクトを登録します。<br />
+     * <p>
+     * {@code url} で示されるリソースをクラスパス上から読み込み、{@code key} で示されるキーでレジストリに登録します。 <br />
+     * 既に同じキーで {@link Image} オブジェクトが登録されている場合、上書きします。</br>
+     * </p>
+     * 
+     * @param key
+     *        キー
+     * @param url
+     *        イメージの URL
+     * @return 登録した {@link Image} オブジェクト
+     * @throws ResourceNotFoundRuntimeException
+     *         指定されたリソースが見つからなかった場合
+     */
+    public static Image putImage(final String key, final URL url) {
+        InputStream is = URLUtil.openStream(url);
+        return putImage(key, is);
+    }
+
+    protected static Image putImage(final String key, final InputStream is) {
+        checkKey(key);
         Image image = new Image(Display.getCurrent(), is);
         imageRegistry.put(key, image);
         return image;
@@ -176,9 +222,9 @@ public class ImageManager {
      * </p>
      * 
      * @param key
-     *            キー
+     *        キー
      * @param imageData
-     *            {@link ImageData} オブジェクト
+     *        {@link ImageData} オブジェクト
      * @return 登録した {@link Image} オブジェクト
      */
     public static Image putImage(final String key, final ImageData imageData) {
@@ -189,26 +235,44 @@ public class ImageManager {
     }
 
     /**
-     * <code>ImageDescriptor</code> オブジェクトを登録します。<br />
+     * {@code ImageDescriptor} オブジェクトを登録します。<br />
      * <p>
-     * <code>path</code> で示されるリソースをクラスパス上から読み込み、{@link ImageDescriptor}
-     * オブジェクトとして <code>key</code> で示されるキーでレジストリに登録します。<br />
+     * {@code path} で示されるリソースをクラスパス上から読み込み、{@link ImageDescriptor} オブジェクトとして
+     * {@code key} で示されるキーでレジストリに登録します。<br />
      * 既に同じキーで {@link ImageDescriptor} オブジェクトが登録されている場合、上書きします。<br />
      * </p>
      * 
      * @param key
-     *            キー
+     *        キー
      * @param path
-     *            リソースのパス
+     *        リソースのパス
      * @return 登録した {@link ImageDescriptor} オブジェクト
      * @throws ResourceNotFoundRuntimeException
-     *             指定されたリソースが見つからなかった場合
+     *         指定されたリソースが見つからなかった場合
      */
-    public static ImageDescriptor putImageDescriptor(final String key,
-            final String path) {
-        checkKey(key);
-
+    public static ImageDescriptor putImageDescriptor(final String key, final String path) {
         URL url = ResourceUtil.getResource(normalizePath(path));
+        return putImageDescriptor(key, url);
+    }
+
+    /**
+     * {@code ImageDescriptor} オブジェクトを登録します。<br />
+     * <p>
+     * {@code url} で示されるリソースをクラスパス上から読み込み、{@link ImageDescriptor} オブジェクトとして
+     * {@code key} で示されるキーでレジストリに登録します。<br />
+     * 既に同じキーで {@link ImageDescriptor} オブジェクトが登録されている場合、上書きします。<br />
+     * </p>
+     * 
+     * @param key
+     *        キー
+     * @param url
+     *        リソースの URL
+     * @return 登録した {@link ImageDescriptor} オブジェクト
+     * @throws ResourceNotFoundRuntimeException
+     *         指定されたリソースが見つからなかった場合
+     */
+    public static ImageDescriptor putImageDescriptor(final String key, final URL url) {
+        checkKey(key);
         ImageDescriptor descriptor = ImageDescriptor.createFromURL(url);
         imageRegistry.put(key, descriptor);
         return descriptor;
@@ -234,7 +298,7 @@ public class ImageManager {
      * </pre>
      * 
      * @param bundle
-     *            リソースバンドルの参照
+     *        リソースバンドルの参照
      */
     public static void loadImages(final ResourceBundle bundle) {
         Enumeration keys = bundle.getKeys();
@@ -256,14 +320,13 @@ public class ImageManager {
      * </p>
      * 
      * @param baseName
-     *            リソースバンドルの基底名
+     *        リソースバンドルの基底名
      * @param loader
-     *            リソースバンドルを読み込むクラスローダ
+     *        リソースバンドルを読み込むクラスローダ
      */
-    public static void loadImages(final String baseName,
-            final ClassLoader loader) {
-        ResourceBundle imageResources = ResourceBundle.getBundle(baseName,
-                Locale.getDefault(), loader);
+    public static void loadImages(final String baseName, final ClassLoader loader) {
+        ResourceBundle imageResources = ResourceBundle.getBundle(baseName, Locale.getDefault(),
+                loader);
         loadImages(imageResources);
     }
 
@@ -278,7 +341,7 @@ public class ImageManager {
      * </p>
      * 
      * @param baseName
-     *            リソースバンドルの基底名
+     *        リソースバンドルの基底名
      */
     public static void loadImages(final String baseName) {
         ResourceBundle imageResources = ResourceBundle.getBundle(baseName);
@@ -290,7 +353,7 @@ public class ImageManager {
      * インジェクション対象となるのは、以下の条件を満たすフィールドです。<br />
      * <p>
      * <ol>
-     * <li><code>public static</code> な定数フィールドであること
+     * <li>{@code public static} な定数フィールドであること
      * <li>{@link Image} または {@link ImageDescriptor} 型のフィールドであること
      * </ol>
      * </p>
@@ -299,16 +362,17 @@ public class ImageManager {
      * 見つからなかった場合は、Warning ログを出力します。
      * <p>
      * <b>【例】</b><br />
-     * 以下の例では、<code>ImageHolder</code> クラスの フィールド、<code>IMAGE_A</code> と
-     * <code>IMAGE_B</code> に対して、 {@link ImageManager} が管理するオブジェクトの中から、<code>IMAGE_A</code>、<code>IMAGE_B</code>
-     * という名前のキーで登録されたオブジェクトをインジェクションします。
+     * 以下の例では、{@code ImageHolder} クラスの フィールド、{@code IMAGE_A} と {@code IMAGE_B}
+     * に対して、 {@link ImageManager} が管理するオブジェクトの中から、 {@code IMAGE_A}、{@code
+     * IMAGE_B} という名前のキーで登録されたオブジェクトをインジェクションします。
      * 
      * <pre>
-     *                           public class ImageHolder() {
-     *                               public static Image IMAGE_A;
-     *                               public static ImageDescriptor IMAGE_B;
-     *                           }
+     *   public class ImageHolder() {
+     *     public static Image IMAGE_A;
+     *     public static ImageDescriptor IMAGE_B;
+     *   }
      * </pre>
+     * 
      * <pre>
      * ImageManager.injectImages(ImageHolder.class);
      * </pre>
@@ -316,7 +380,7 @@ public class ImageManager {
      * </p>
      * 
      * @param clazz
-     *            対象クラス
+     *        対象クラス
      */
     public static void injectImages(final Class clazz) {
         BeanDesc beanDesc = BeanDescFactory.getBeanDesc(clazz);
@@ -348,8 +412,7 @@ public class ImageManager {
         imageRegistry = null;
     }
 
-    protected static void injectField(final Class clazz, final Field field,
-            final Object o) {
+    protected static void injectField(final Class clazz, final Field field, final Object o) {
         if (o != null) {
             FieldUtil.set(field, null, o);
         }
@@ -361,8 +424,7 @@ public class ImageManager {
         return (field.getModifiers() & MOD_MASK) == MOD_EXPECTED;
     }
 
-    protected static boolean isAssignableFrom(final Class<?> clazz,
-            final Field target) {
+    protected static boolean isAssignableFrom(final Class<?> clazz, final Field target) {
         return clazz.isAssignableFrom(target.getType());
     }
 
@@ -377,8 +439,8 @@ public class ImageManager {
             if (path.length() > 1) {
                 return path.substring(1);
             }
-			return "";
+            return "";
         }
-		return path;
+        return path;
     }
 }

@@ -15,9 +15,17 @@
  */
 package org.seasar.eclipse.common.util;
 
+import java.io.InputStream;
+import java.net.URL;
+
+import junitx.framework.ArrayAssert;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.seasar.framework.exception.ResourceNotFoundRuntimeException;
+import org.seasar.framework.util.ResourceUtil;
 
 /**
  * {@link ImageManager} のためのテストクラスです。<br />
@@ -68,11 +76,21 @@ public class ImageManagerTest extends AbstractShellTest {
     }
 
     /**
+     * {@link ImageManager#putImage(String, ImageData)} メソッドのテストです。<br />
+     */
+    public void testPutImage_String_ImageData() {
+        ImageLoader loader = new ImageLoader();
+        InputStream is = ResourceUtil.getResourceAsStream("images/arg.gif");
+        ImageData orgImageData = loader.load(is)[0];
+        Image image = ImageManager.putImage("ARG_IMG", orgImageData);
+        ArrayAssert.assertEquals("1", orgImageData.data, image.getImageData().data);
+    }
+
+    /**
      * {@link ImageManager#putImageDescriptor(String, String)} メソッドのテストです。<br />
      */
     public void testPutImageDescriptor() {
-        ImageDescriptor desc = ImageManager.putImageDescriptor("ARG_IMG",
-                "images/arg.gif");
+        ImageDescriptor desc = ImageManager.putImageDescriptor("ARG_IMG", "images/arg.gif");
         ImageDescriptor getDesc = ImageManager.getImageDescriptor("ARG_IMG");
         assertNotNull("1", desc);
         assertEquals("2", desc, getDesc);
@@ -91,7 +109,7 @@ public class ImageManagerTest extends AbstractShellTest {
     /**
      * {@link ImageManager#loadImage(String)} メソッドのテストです。<br />
      */
-    public void testLoadImage() {
+    public void testLoadImage_String() {
         Image argImg1 = ImageManager.loadImage("images/arg.gif");
         assertNotNull("1", argImg1);
         Image argImg2 = ImageManager.loadImage("images/arg.gif");
@@ -100,14 +118,25 @@ public class ImageManagerTest extends AbstractShellTest {
     }
 
     /**
+     * {@link ImageManager#loadImage(String, URL)} メソッドのテストです。<br />
+     */
+    public void testLoadImage_String_URL() {
+        String path = "images/arg.gif";
+        URL url = ResourceUtil.getResource(path);
+        Image argImg1 = ImageManager.loadImage(path, url);
+        assertNotNull("1", argImg1);
+        Image argImg2 = ImageManager.loadImage(path, url);
+        assertNotNull("2", argImg2);
+        assertSame("3", argImg1, argImg2);
+    }
+
+    /**
      * {@link ImageManager#loadImageDescriptor(String)} メソッドのテストです。<br />
      */
     public void testLoadImageDescriptor() {
-        ImageDescriptor desc1 = ImageManager
-                .loadImageDescriptor("images/arg.gif");
+        ImageDescriptor desc1 = ImageManager.loadImageDescriptor("images/arg.gif");
         assertNotNull("1", desc1);
-        ImageDescriptor desc2 = ImageManager
-                .loadImageDescriptor("images/arg.gif");
+        ImageDescriptor desc2 = ImageManager.loadImageDescriptor("images/arg.gif");
         assertNotNull("2", desc2);
         assertSame("3", desc1, desc2);
     }
@@ -152,8 +181,7 @@ public class ImageManagerTest extends AbstractShellTest {
         assertNotNull("3", Images.COMPONENT_IMG);
 
         assertNotNull("4", Images.CONTAINER_IMG);
-        assertEquals("5", ImageManager.getImage("CONTAINER_IMG"),
-                Images.CONTAINER_IMG);
+        assertEquals("5", ImageManager.getImage("CONTAINER_IMG"), Images.CONTAINER_IMG);
 
         assertNotNull("6", Images.INCLUDE_IMG);
     }
@@ -185,23 +213,16 @@ public class ImageManagerTest extends AbstractShellTest {
      * {@link ImageManager#normalizePath(String)} メソッドのテストです。<br />
      */
     public void testNormalizePath() {
-        assertEquals(
-                "1",
-                "org/seasar/eclipse/common/util/ImageManager",
-                ImageManager
-                        .normalizePath("/org/seasar/eclipse/common/util/ImageManager"));
-        assertEquals(
-                "2",
-                "org/seasar/eclipse/common/util/ImageManager",
-                ImageManager
-                        .normalizePath("org/seasar/eclipse/common/util/ImageManager"));
+        assertEquals("1", "org/seasar/eclipse/common/util/ImageManager", ImageManager
+                .normalizePath("/org/seasar/eclipse/common/util/ImageManager"));
+        assertEquals("2", "org/seasar/eclipse/common/util/ImageManager", ImageManager
+                .normalizePath("org/seasar/eclipse/common/util/ImageManager"));
         assertEquals("3", "", ImageManager.normalizePath("/"));
         assertNull("4", ImageManager.normalizePath(null));
     }
 
     protected void loadImages() {
-        ImageManager
-                .loadImages("org/seasar/eclipse/common/util/ImageManagerTest");
+        ImageManager.loadImages("org/seasar/eclipse/common/util/ImageManagerTest");
     }
 
     /**
