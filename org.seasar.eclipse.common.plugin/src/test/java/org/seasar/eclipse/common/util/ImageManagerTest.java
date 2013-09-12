@@ -9,7 +9,7 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
  * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
@@ -17,8 +17,7 @@ package org.seasar.eclipse.common.util;
 
 import java.io.InputStream;
 import java.net.URL;
-
-import junitx.framework.ArrayAssert;
+import java.util.Arrays;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -83,7 +82,9 @@ public class ImageManagerTest extends AbstractShellTest {
         InputStream is = ResourceUtil.getResourceAsStream("images/arg.gif");
         ImageData orgImageData = loader.load(is)[0];
         Image image = ImageManager.putImage("ARG_IMG", orgImageData);
-        ArrayAssert.assertEquals("1", orgImageData.data, image.getImageData().data);
+
+        assertEquals("1", Arrays.toString(orgImageData.data),
+                Arrays.toString(image.getImageData().data));
     }
 
     /**
